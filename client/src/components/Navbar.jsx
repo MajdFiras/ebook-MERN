@@ -4,7 +4,7 @@ import { Link as RouterLink } from 'react-router-dom';
 
 export const Navbar = () => {
   return (
-    <Box bg='#2a4365' color='white'>
+    <Box bg='#CBD5E0' color='white'>
       <Flex
         justify='space-between'
         align='center'
@@ -14,17 +14,17 @@ export const Navbar = () => {
         maxW='1200px'
         mx='auto'
       >
-        <Heading as={RouterLink} to="/" fontSize='2xl' _hover={{ color: 'gray.400' }}>
+        <Heading as={RouterLink} to="/" fontSize='2xl' color={'#2D3748'} _hover={{ color: '#718096' }}>
         &#128218; BuyBook
         </Heading>
         <UnorderedList display='flex' listStyleType='none' m={0} gap='20px'>
           <ListItem>
-            <Link as={RouterLink} to="/login" _hover={{ textDecoration: 'underline', color: 'gray.400' }}>
+            <Link as={RouterLink} to="/login" color={'#2D3748'} _hover={{ textDecoration: 'underline', color: '#718096' }}>
               Login
             </Link>
           </ListItem>
           <ListItem>
-            <Link as={RouterLink} to="/signup" _hover={{ textDecoration: 'underline', color: 'gray.400' }}>
+            <Link as={RouterLink} to="/signup" color={'#2D3748'} _hover={{ textDecoration: 'underline', color: '#718096' }}>
               Signup
             </Link>
           </ListItem>
