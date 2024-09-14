@@ -7,7 +7,7 @@ import  Account  from "./pages/Account"
 
 
 function App() {
- 
+  const isUserSignIn = !!localStorage.getItem("token")
 
   return (
    
@@ -21,7 +21,7 @@ function App() {
       <Route path='/' element={<Home/>} />
       <Route path="/login" element={<Login/>} />
       <Route path="/signup" element={<SignUp/>} />
-      <Route path="/account" element={<Account/>} />
+     {isUserSignIn &&  <Route path="/account" element={<Account/>} /> }
     </Routes>
     </>
     
