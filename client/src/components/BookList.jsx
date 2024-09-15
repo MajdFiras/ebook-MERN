@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+
+
+
 import { 
     Card, CardBody, Image, Text, Stack, Heading
 } from '@chakra-ui/react';
 
 export const BookList = () => {
   const [data, setData] = useState([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchBooks = async () => {
       try {
@@ -33,6 +38,10 @@ export const BookList = () => {
               transition: 'all 0.5s ease-in-out',
               boxShadow: 'xl'
             }}
+            onClick={() => {
+              navigate(`/book/bookdetails/${book._id}`)
+            }
+            }
           >
             <CardBody>
               <Image

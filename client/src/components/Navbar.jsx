@@ -3,6 +3,8 @@ import { Flex, Box, Heading, UnorderedList, ListItem, Link } from '@chakra-ui/re
 import { Link as RouterLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
+
+
 export const Navbar = () => {
   const navigate = useNavigate();
   const isUserSignIn = !!localStorage.getItem('token');
@@ -45,8 +47,9 @@ export const Navbar = () => {
           ) : (
             <>
             <ListItem>
+            
               <Link as={RouterLink} to="/login" color={'#2D3748'} _hover={{ textDecoration: 'underline', color: '#718096' }}>
-                Login
+                 Login
               </Link>
             </ListItem>
             <ListItem>

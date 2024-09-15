@@ -1,5 +1,5 @@
 import Book from "../models/book.model.js";
-
+import mongoose from "mongoose";
 
 export const getAllBooks = async (req,res)=>{
     try {
@@ -62,3 +62,18 @@ export const updateBook = async  (req,res) =>{
         res.status(500).json({success:false,message:"Book Not Found"}); 
     }
 };
+
+
+export const getBookById = async (req,res)=>{
+    const {id} = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(404).json({success:false,message:"Book Not Found"});
+    }
+    try{
+        const book = await Book.findById(id);
+        res.status(200).json({success:true,data : book});
+    }
+    catch(err){
+        res.status(500).json({success:false,message:"Server Error"});
+    }
+}
