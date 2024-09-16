@@ -4,7 +4,6 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 
-
 export const Navbar = () => {
   const navigate = useNavigate();
   const isUserSignIn = !!localStorage.getItem('token');

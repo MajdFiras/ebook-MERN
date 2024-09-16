@@ -45,38 +45,38 @@ const BookDetails = () => {
         />
         <Stack>
           <CardBody>
-            <Heading size='md'>{book.title}</Heading>
-            <Text py='2'>{book.author}</Text>
-            {/* // TODO: ADD THE DESCRIPTION HERE !! */}
-            <Text py='2'>
-              Caffè latte is a coffee beverage of Italian origin made with espresso
-              and steamed milk.
-            </Text>
-            <Text py={2}>
-             <strong>Price:</strong>   <span style={{color:'green', fontWeight:'bold'}}>${book.price}</span>
-            </Text>
-          {/* // -- TODO: ---------------------------- */}
-            <Text py={2}>
-             <strong>Publish Date</strong> : {formattedDate}
-            </Text>
-            <Text py={2}>
-              <strong>Remaining quantity :</strong> {book.amount} 
-            </Text>
-            <Text py={2}>
-              <strong>genre :</strong> {book.genre} 
-            </Text>
-            <Text py={2}>
-              <strong>ISBN :</strong> {book.isbn} 
-            </Text>
-            <Text py={2}>
-              <strong>Status :</strong> {book.status} 
-            </Text>
-            <Text py={2}>
-              <strong>Tags:</strong>  {book.tags && book.tags.map((tag,index) => (<Badge key={index} colorScheme="blue" mr={1}>
-                  {tag}
-                </Badge>))} 
-            </Text>
-          
+                <Heading size='md'>{book.title}</Heading>
+                <Text py='2'>{book.author}</Text>
+                {/* // TODO: ADD THE DESCRIPTION HERE !! */}
+                <Text py='2'>
+                  Caffè latte is a coffee beverage of Italian origin made with espresso
+                  and steamed milk.
+                </Text>
+                <Text py={2}>
+                <strong>Price:</strong>   <span style={{color:'green', fontWeight:'bold'}}>${book.price}</span>
+                </Text>
+                {/* // -- TODO: ---------------------------- */}
+                <Text py={2}>
+                <strong>Publish Date</strong> : {formattedDate}
+                </Text>
+                <Text py={2}>
+                  <strong>Remaining quantity :</strong> {book.amount} 
+                </Text>
+                <Text py={2}>
+                  <strong>genre :</strong> {book.genre} 
+                </Text>
+                <Text py={2}>
+                  <strong>ISBN :</strong> {book.isbn} 
+                </Text>
+                <Text py={2}>
+                  <strong>Status :</strong> {book.status} 
+                </Text>
+                <Text py={2}>
+                  <strong>Tags:</strong>  {book.tags && book.tags.map((tag,index) => (<Badge key={index} colorScheme="blue" mr={1}>
+                      {tag}
+                    </Badge>))} 
+                </Text>
+              
            </CardBody>
 
           <CardFooter>
