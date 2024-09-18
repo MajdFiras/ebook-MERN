@@ -1,8 +1,13 @@
 import React from 'react'
-
+import { useState, useEffect } from 'react';
+import {Center,Box} from '@chakra-ui/react';
 const Account = () => {
   return (
-    <div>Account</div>
+    <Center>
+      <Box>
+        
+      </Box>
+    </Center>
   )
 }
 

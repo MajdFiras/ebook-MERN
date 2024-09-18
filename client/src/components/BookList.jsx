@@ -5,7 +5,6 @@ import {
     Card, CardBody, Image, Text, Stack, Heading, Input , Center, InputGroup , InputLeftElement, 
     Box, 
 } from '@chakra-ui/react';
-
 import { SearchIcon } from '@chakra-ui/icons'
 
 export const BookList = () => {
