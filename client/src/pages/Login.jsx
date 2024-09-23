@@ -14,11 +14,12 @@ const Login = () => {
     try{
       const response = await axios.post('http://localhost:5000/api/auth/login',{username,password});
       const token = response.data.token;
+      console.log(token);
       setUsername("");
       setPassword("");
       navigate('/');
       window.location.reload();
-      localStorage.setItem('token',token);
+      localStorage.setItem('token',JSON.stringify(token));
     } catch(err){}
   }
 
