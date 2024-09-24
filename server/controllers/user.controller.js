@@ -52,9 +52,8 @@ export const loginUser = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Username or password is incorrect' });
         }
 
-        // Generate JWT token with user._id as the payload
         const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: '1h' });
-
+        
         res.status(200).json({ 
             success: true, 
             message: 'Login successful', 
