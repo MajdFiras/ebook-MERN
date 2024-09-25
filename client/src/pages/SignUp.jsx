@@ -50,7 +50,7 @@ const SignUp = () => {
           <Input 
             id="username" 
             type="text" 
-            placeholder="Enter your username" 
+            placeholder="Username" 
             mt="2" 
             mb="4" 
             value={username}
@@ -60,7 +60,7 @@ const SignUp = () => {
           <Input 
             id="email" 
             type="email" 
-            placeholder="Enter your email" 
+            placeholder="Email" 
             mt="2" 
             mb="4" 
             value={email}
@@ -70,7 +70,7 @@ const SignUp = () => {
           <Input 
             id="password" 
             type="password" 
-            placeholder="Enter your password" 
+            placeholder="Password" 
             mt="2" 
             mb="4" 
             value={password}

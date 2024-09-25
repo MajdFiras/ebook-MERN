@@ -48,7 +48,7 @@ const Login = () => {
           <Input 
             id="username" 
             type="username" 
-            placeholder="Enter your username" 
+            placeholder="Username" 
             mt="2" 
             mb="4"
             value={username}
@@ -58,7 +58,7 @@ const Login = () => {
           <Input 
             id="password" 
             type="password" 
-            placeholder="Enter your password" 
+            placeholder="Password" 
             mt="2" 
             mb="4" 
             value={password}

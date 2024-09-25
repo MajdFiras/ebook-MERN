@@ -32,8 +32,7 @@ const Account = () => {
     }
   }, [userId]); 
 
-  {/*  <br />
-  Email: */}
+  
   
   return (
     <Center>
@@ -41,7 +40,8 @@ const Account = () => {
         <Center padding={'4%'}>
           <Avatar size='xl' name='Dan Abrahmov' src='https://bit.ly/dan-abramov' />
         </Center>
-        <Divider />
+        <Divider borderColor={'##9fabb3'}  />
+        <br />
         <Stack marginLeft={'5%'} spacing={4} display={'flex'} flexDirection={'column'} >
           <Text><span style={{fontWeight: 'bold'}}>Username:</span> {userInfo ? userInfo.username : 'No username found'}</Text>
           <Text><span style={{fontWeight: 'bold'}}>Email:</span> {userInfo ? userInfo.email : 'No user Email found'}</Text>
