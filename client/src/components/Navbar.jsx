@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Flex, Box, Heading, UnorderedList, ListItem, Link, Button, IconButton, Text, Image, Badge } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -14,11 +14,27 @@ import {
 export const Navbar = () => {
   const navigate = useNavigate();
   const isUserSignIn = !!localStorage.getItem('token');
-  const cartItemCount = 0; 
+  const getCartDataArr = JSON.parse(localStorage.getItem('cartData'));
+  const [cartItemCount, SetCartItemCount] = useState(getCartDataArr ? getCartDataArr.length : 0);
 
   const handleSignOut = () => {
     localStorage.removeItem('token');
     navigate('/login');
+  };
+
+  const handleRemoveFromCart = (itemId) => {
+    const cartData = JSON.parse(localStorage.getItem('cartData'));
+    const itemIndex = cartData.findIndex(cartItem => cartItem.id === itemId);
+    if (itemIndex > -1) {
+      if (cartData[itemIndex].quantity > 1) {
+        cartData[itemIndex].quantity -= 1;
+      } else {
+        cartData.splice(itemIndex, 1);
+      }
+      localStorage.setItem('cartData', JSON.stringify(cartData));
+      SetCartItemCount(cartData.length);
+      window.location.reload(); 
+    }
   };
 
   return (
@@ -41,7 +57,7 @@ export const Navbar = () => {
         <UnorderedList display='flex' listStyleType='none' m={0} gap='20px' alignItems='center'>
           {isUserSignIn ? (
             <>
-            <ListItem display="flex" alignItems="center">
+              <ListItem display="flex" alignItems="center">
                 <Popover>
                   <PopoverTrigger>
                     <Box position="relative">
@@ -64,21 +80,27 @@ export const Navbar = () => {
                   </PopoverTrigger>
                   <PopoverContent>
                     <PopoverBody>
-                      <Box marginTop={'10%'}>
-                        <Flex alignItems="center" justifyContent="space-between" mb={2} backgroundColor={'#f6f6f6'} padding={'10px'}>
-                          <Image 
-                            src="https://m.media-amazon.com/images/I/81QuEGw8VPL._AC_UF1000,1000_QL80_.jpg"  
-                            alt="Cart Item Image"
-                            boxSize="50px"  
-                            objectFit="contain" 
-                            maxH="50px"       
-                            maxW="50px"       
-                            borderRadius="md" 
-                          />
-                          <Text color={'black'} ml={2}>The Great Gatsby</Text> 
-                          <IconButton aria-label="Delete item" icon={<MdDelete color='red' />} variant="ghost" />
-                        </Flex>
-                      </Box>
+                      {getCartDataArr && getCartDataArr.length > 0 ? (
+                        getCartDataArr.map((item) => (
+                          <Box key={item.id} marginTop={'10%'}>
+                            <Flex alignItems="center" justifyContent="space-between" mb={2} backgroundColor={'#f6f6f6'} padding={'10px'}>
+                              <Image 
+                                src={item.image} // Ensure this matches your object property
+                                alt="Cart Item Image"
+                                boxSize="50px"  
+                                objectFit="contain" 
+                                maxH="50px"       
+                                maxW="50px"       
+                                borderRadius="md" 
+                              />
+                              <Text color={'black'} ml={2}>{item.title} x{item.quantity}</Text> 
+                              <IconButton aria-label="Delete item" icon={<MdDelete color='red' />} onClick={() => handleRemoveFromCart(item.id)} variant="ghost" />
+                            </Flex>
+                          </Box>  
+                        ))
+                      ) : (
+                        <Text>No items in the cart.</Text>
+                      )}
                       <Button backgroundColor={'#85ff8d'} _hover={{ backgroundColor: "#41ff4e" }} width="100%" mt={4}>
                         Proceeding
                       </Button>
@@ -96,7 +118,6 @@ export const Navbar = () => {
                   Signout
                 </Link>
               </ListItem>
-              
             </>
           ) : (
             <>
@@ -123,21 +144,27 @@ export const Navbar = () => {
                   </PopoverTrigger>
                   <PopoverContent>
                     <PopoverBody>
-                      <Box marginTop={'10%'}>
-                        <Flex alignItems="center" justifyContent="space-between" mb={2} backgroundColor={'#f6f6f6'} padding={'10px'}>
-                          <Image 
-                            src="https://m.media-amazon.com/images/I/81QuEGw8VPL._AC_UF1000,1000_QL80_.jpg"  
-                            alt="Cart Item Image"
-                            boxSize="50px"  
-                            objectFit="contain" 
-                            maxH="50px"       
-                            maxW="50px"       
-                            borderRadius="md" 
-                          />
-                          <Text color={'black'} ml={2}>The Great Gatsby</Text> 
-                          <IconButton aria-label="Delete item" icon={<MdDelete color='red' />} variant="ghost" />
-                        </Flex>
-                      </Box>
+                      {getCartDataArr && getCartDataArr.length > 0 ? (
+                        getCartDataArr.map((item) => (
+                          <Box key={item.id} marginTop={'10%'}>
+                            <Flex alignItems="center" justifyContent="space-between" mb={2} backgroundColor={'#f6f6f6'} padding={'10px'}>
+                              <Image 
+                                src={item.image} // Ensure this matches your object property
+                                alt="Cart Item Image"
+                                boxSize="50px"  
+                                objectFit="contain" 
+                                maxH="50px"       
+                                maxW="50px"       
+                                borderRadius="md" 
+                              />
+                              <Text color={'black'} ml={1}>{item.title} x{item.quantity} </Text> 
+                              <IconButton aria-label="Delete item" icon={<MdDelete color='red' />} onClick={() => handleRemoveFromCart(item.id)} variant="ghost" />
+                            </Flex>
+                          </Box>  
+                        ))
+                      ) : (
+                        <Text>No items in the cart.</Text>
+                      )}
                       <Button backgroundColor={'#85ff8d'} _hover={{ backgroundColor: "#41ff4e" }} width="100%" mt={4}>
                         Proceeding
                       </Button>

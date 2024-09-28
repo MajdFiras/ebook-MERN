@@ -8,9 +8,13 @@ import { SearchIcon } from '@chakra-ui/icons';
 import { BsCartPlusFill } from "react-icons/bs";
 
 export const BookList = () => {
-  const [data, setData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  const [data, setData] = useState([]); 
+  const [searchTerm, setSearchTerm] = useState('');   
+  const [cartData, setCartData] = useState(() => {
+    const savedCart = localStorage.getItem('cartData');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -29,8 +33,39 @@ export const BookList = () => {
     book.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  
+  const handleAddToCart = (book) => {
+    const existingCartItem = cartData.find(cartItem => cartItem.id === book._id);
+
+    if (existingCartItem) {
+      const updatedCartData = cartData.map(cartItem => 
+        cartItem.id === book._id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
+      );
+      setCartData(updatedCartData);
+      localStorage.setItem('cartData', JSON.stringify(updatedCartData));
+      window.location.reload();
+    } else {
+      
+      const newCartItem = {
+        id: book._id,
+        title: book.title,
+        image: book.cover,
+        quantity: 1, 
+      };
+
+      const updatedCartData = [...cartData, newCartItem];
+      setCartData(updatedCartData);
+      localStorage.setItem('cartData', JSON.stringify(updatedCartData));
+      window.location.reload();
+    }
+   
+  };
+
+  
+
   return (
     <div>
+      
       <Center>
         <Text fontSize={'3xl'} fontWeight={'bold'} marginTop={'50px'}>
           What Are you looking For ..?
@@ -90,7 +125,6 @@ export const BookList = () => {
                       {book.title} <span style={{ color: 'green', fontSize: '15px' }}>${book.price}</span>
                     </Heading>
                     <Text>{book.author}</Text>
-                    <Text>{book.description}</Text>
                   </Stack>
                 </CardBody>
               </Card>
@@ -111,8 +145,9 @@ export const BookList = () => {
                   bottom: '3%',  
                   right: '3%',
                 }}
-                onClick={() => {
-                  console.log(`Add ${book.title} to cart`);
+                onClick={(e) => {
+                  e.stopPropagation(); 
+                  handleAddToCart(book);
                 }}
               />
             </Box>
