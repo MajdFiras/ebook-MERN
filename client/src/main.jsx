@@ -3,15 +3,18 @@ import { createRoot } from 'react-dom/client'
 import { ChakraProvider } from '@chakra-ui/react'
 import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom';
-import {store} from './Store/store.js'
-import { Provider } from 'react-redux'
+import { BooksProvider } from './context/BooksProvider.jsx'; 
+import { CartProvider } from './context/CartProvider.jsx'; 
+
 createRoot(document.getElementById('root')).render(
  <StrictMode>
    <BrowserRouter>
       <ChakraProvider>
-        <Provider store={store}>
+        <BooksProvider>
+        <CartProvider> 
         <App />
-        </Provider>
+        </CartProvider>
+        </BooksProvider>
       </ChakraProvider>
    </BrowserRouter>
  </StrictMode>,

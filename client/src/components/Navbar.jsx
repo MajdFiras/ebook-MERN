@@ -1,41 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Flex, Box, Heading, UnorderedList, ListItem, Link, Button, IconButton, Text, Image, Badge } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { FaCartShopping } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
-} from '@chakra-ui/react';
+import { Popover, PopoverTrigger, PopoverContent, PopoverBody } from '@chakra-ui/react';
+import { CartContext } from "../context/CartProvider";
 
 export const Navbar = () => {
+  const { cart, setCart } = useContext(CartContext);
   const navigate = useNavigate();
   const isUserSignIn = !!localStorage.getItem('token');
-  const getCartDataArr = JSON.parse(localStorage.getItem('cartData'));
-  const [cartItemCount, SetCartItemCount] = useState(getCartDataArr ? getCartDataArr.length : 0);
-
+  
   const handleSignOut = () => {
     localStorage.removeItem('token');
     navigate('/login');
   };
 
-  const handleRemoveFromCart = (itemId) => {
-    const cartData = JSON.parse(localStorage.getItem('cartData'));
-    const itemIndex = cartData.findIndex(cartItem => cartItem.id === itemId);
-    if (itemIndex > -1) {
-      if (cartData[itemIndex].quantity > 1) {
-        cartData[itemIndex].quantity -= 1;
-      } else {
-        cartData.splice(itemIndex, 1);
-      }
-      localStorage.setItem('cartData', JSON.stringify(cartData));
-      SetCartItemCount(cartData.length);
-      window.location.reload(); 
+  const handleRemoveItem = (item) => {
+    if (item.quantity > 1) {
+      const updatedCart = cart.map(cartItem =>
+        cartItem._id === item._id
+          ? { ...cartItem, quantity: cartItem.quantity - 1 }
+          : cartItem
+      );
+      setCart(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+    } else {
+      const updatedCart = cart.filter(cartItem => cartItem._id !== item._id);
+      setCart(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
     }
   };
+  
+
+
 
   return (
     <Box bg='#ffffff' color='white'>
@@ -74,33 +73,39 @@ export const Navbar = () => {
                         fontSize="0.8em"
                         color="white"
                       >
-                        {cartItemCount}
+                        {cart.length}
                       </Badge>
                     </Box>
                   </PopoverTrigger>
                   <PopoverContent>
                     <PopoverBody>
-                      {getCartDataArr && getCartDataArr.length > 0 ? (
-                        getCartDataArr.map((item) => (
-                          <Box key={item.id} marginTop={'10%'}>
+                      {cart && cart.length > 0 ? (
+                        cart.map((item) => (
+                          <Box key={item._id} marginTop={'10%'}>
                             <Flex alignItems="center" justifyContent="space-between" mb={2} backgroundColor={'#f6f6f6'} padding={'10px'}>
-                              <Image 
-                                src={item.image} // Ensure this matches your object property
-                                alt="Cart Item Image"
-                                boxSize="50px"  
-                                objectFit="contain" 
-                                maxH="50px"       
-                                maxW="50px"       
-                                borderRadius="md" 
+                              <Image
+                                src={item.cover}
+                                alt={item.title}
+                                boxSize="50px"
+                                objectFit="contain"
+                                maxH="50px"
+                                maxW="50px"
+                                borderRadius="md"
                               />
-                              <Text color={'black'} ml={2}>{item.title} x{item.quantity}</Text> 
-                              <IconButton aria-label="Delete item" icon={<MdDelete color='red' />} onClick={() => handleRemoveFromCart(item.id)} variant="ghost" />
+                              <Text color={'black'} ml={1}>{item.title} x{item.quantity}</Text>
+                              <IconButton
+                                aria-label="Delete item"
+                                icon={<MdDelete color='red' />}
+                                variant="ghost"
+                                onClick={()=> handleRemoveItem(item)}
+                              />
                             </Flex>
-                          </Box>  
+                          </Box>
                         ))
                       ) : (
-                        <Text>No items in the cart.</Text>
+                        <Text marginTop={'10px'} textAlign={'center'} color={'black'}>No items in the cart.</Text>
                       )}
+
                       <Button backgroundColor={'#85ff8d'} _hover={{ backgroundColor: "#41ff4e" }} width="100%" mt={4}>
                         Proceeding
                       </Button>
@@ -138,33 +143,39 @@ export const Navbar = () => {
                         fontSize="0.8em"
                         color="white"
                       >
-                        {cartItemCount}
+                        {cart.length}
                       </Badge>
                     </Box>
                   </PopoverTrigger>
                   <PopoverContent>
                     <PopoverBody>
-                      {getCartDataArr && getCartDataArr.length > 0 ? (
-                        getCartDataArr.map((item) => (
-                          <Box key={item.id} marginTop={'10%'}>
+                      {cart && cart.length > 0 ? (
+                        cart.map((item) => (
+                          <Box key={item._id} marginTop={'10%'}>
                             <Flex alignItems="center" justifyContent="space-between" mb={2} backgroundColor={'#f6f6f6'} padding={'10px'}>
-                              <Image 
-                                src={item.image} // Ensure this matches your object property
-                                alt="Cart Item Image"
-                                boxSize="50px"  
-                                objectFit="contain" 
-                                maxH="50px"       
-                                maxW="50px"       
-                                borderRadius="md" 
+                              <Image
+                                src={item.cover}
+                                alt={item.title}
+                                boxSize="50px"
+                                objectFit="contain"
+                                maxH="50px"
+                                maxW="50px"
+                                borderRadius="md"
                               />
-                              <Text color={'black'} ml={1}>{item.title} x{item.quantity} </Text> 
-                              <IconButton aria-label="Delete item" icon={<MdDelete color='red' />} onClick={() => handleRemoveFromCart(item.id)} variant="ghost" />
+                              <Text color={'black'} ml={1}>{item.title} x{item.quantity}</Text>
+                              <IconButton
+                                aria-label="Delete item"
+                                icon={<MdDelete color='red' />}
+                                variant="ghost"
+                                onClick={()=> handleRemoveItem(item)}
+                              />
                             </Flex>
-                          </Box>  
+                          </Box>
                         ))
                       ) : (
-                        <Text>No items in the cart.</Text>
+                        <Text marginTop={'10px'} textAlign={'center'} color={'black'}>No items in the cart.</Text>
                       )}
+
                       <Button backgroundColor={'#85ff8d'} _hover={{ backgroundColor: "#41ff4e" }} width="100%" mt={4}>
                         Proceeding
                       </Button>

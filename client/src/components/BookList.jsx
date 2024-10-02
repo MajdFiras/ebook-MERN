@@ -1,71 +1,54 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Card, CardBody, Image, Text, Stack, Heading, Input, Center, InputGroup, InputLeftElement, Box, IconButton 
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import { BsCartPlusFill } from "react-icons/bs";
+import BooksContext from '../context/BooksProvider.jsx';
+import { CartContext } from "../context/CartProvider";
+
 
 export const BookList = () => {
+  const { cart, setCart } = useContext(CartContext);
+  const { Books } = useContext(BooksContext);
   const navigate = useNavigate();
-  const [data, setData] = useState([]); 
-  const [searchTerm, setSearchTerm] = useState('');   
-  const [cartData, setCartData] = useState(() => {
-    const savedCart = localStorage.getItem('cartData');
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
+  const [searchTerm, setSearchTerm] = useState('');
 
+ 
   useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/books');
-        setData(response.data.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchBooks();
-  }, []);
+    const storedCart = JSON.parse(localStorage.getItem('cart'));
+    if (storedCart) {
+      setCart(storedCart); 
+    }
+  }, [setCart]);
 
   
-  const filteredBooks = data.filter(book => 
+  const filteredBooks = Books.filter(book => 
     book.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  
-  const handleAddToCart = (book) => {
-    const existingCartItem = cartData.find(cartItem => cartItem.id === book._id);
+  const addItemToCart = (book) => {
+    const existingItem = cart.find(item => item._id === book._id);
 
-    if (existingCartItem) {
-      const updatedCartData = cartData.map(cartItem => 
-        cartItem.id === book._id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
+    let updatedCart;
+    if (existingItem) {
+      updatedCart = cart.map(item =>
+        item._id === book._id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
       );
-      setCartData(updatedCartData);
-      localStorage.setItem('cartData', JSON.stringify(updatedCartData));
-      window.location.reload();
     } else {
-      
-      const newCartItem = {
-        id: book._id,
-        title: book.title,
-        image: book.cover,
-        quantity: 1, 
-      };
-
-      const updatedCartData = [...cartData, newCartItem];
-      setCartData(updatedCartData);
-      localStorage.setItem('cartData', JSON.stringify(updatedCartData));
-      window.location.reload();
+      updatedCart = [...cart, { ...book, quantity: 1 }];
     }
-   
+
+    setCart(updatedCart);
+    localStorage.setItem('cart', JSON.stringify(updatedCart)); 
   };
 
-  
 
   return (
     <div>
-      
       <Center>
         <Text fontSize={'3xl'} fontWeight={'bold'} marginTop={'50px'}>
           What Are you looking For ..?
@@ -129,7 +112,6 @@ export const BookList = () => {
                 </CardBody>
               </Card>
 
-              
               <IconButton
                 aria-label="Add to cart"
                 icon={<BsCartPlusFill />}
@@ -147,7 +129,7 @@ export const BookList = () => {
                 }}
                 onClick={(e) => {
                   e.stopPropagation(); 
-                  handleAddToCart(book);
+                  addItemToCart(book);
                 }}
               />
             </Box>
