@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Flex, Box, Heading, UnorderedList, ListItem, Link, Button, IconButton, Text, Image, Badge } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -7,8 +7,11 @@ import { MdDelete } from "react-icons/md";
 import { Popover, PopoverTrigger, PopoverContent, PopoverBody } from '@chakra-ui/react';
 import { CartContext } from "../context/CartProvider";
 
+
+
 export const Navbar = () => {
-  const { cart, setCart } = useContext(CartContext);
+
+  const { cart, handleRemoveItem } = useContext(CartContext);
   const navigate = useNavigate();
   const isUserSignIn = !!localStorage.getItem('token');
   
@@ -17,24 +20,7 @@ export const Navbar = () => {
     navigate('/login');
   };
 
-  const handleRemoveItem = (item) => {
-    if (item.quantity > 1) {
-      const updatedCart = cart.map(cartItem =>
-        cartItem._id === item._id
-          ? { ...cartItem, quantity: cartItem.quantity - 1 }
-          : cartItem
-      );
-      setCart(updatedCart);
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
-    } else {
-      const updatedCart = cart.filter(cartItem => cartItem._id !== item._id);
-      setCart(updatedCart);
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
-    }
-  };
-  
-
-
+  const totalQuantity = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <Box bg='#ffffff' color='white'>
@@ -73,7 +59,7 @@ export const Navbar = () => {
                         fontSize="0.8em"
                         color="white"
                       >
-                        {cart.length}
+                        {totalQuantity}
                       </Badge>
                     </Box>
                   </PopoverTrigger>
@@ -97,7 +83,7 @@ export const Navbar = () => {
                                 aria-label="Delete item"
                                 icon={<MdDelete color='red' />}
                                 variant="ghost"
-                                onClick={()=> handleRemoveItem(item)}
+                                onClick={() => handleRemoveItem(item)}
                               />
                             </Flex>
                           </Box>
@@ -143,7 +129,7 @@ export const Navbar = () => {
                         fontSize="0.8em"
                         color="white"
                       >
-                        {cart.length}
+                        {totalQuantity}
                       </Badge>
                     </Box>
                   </PopoverTrigger>
@@ -167,7 +153,7 @@ export const Navbar = () => {
                                 aria-label="Delete item"
                                 icon={<MdDelete color='red' />}
                                 variant="ghost"
-                                onClick={()=> handleRemoveItem(item)}
+                                onClick={() => handleRemoveItem(item)}
                               />
                             </Flex>
                           </Box>

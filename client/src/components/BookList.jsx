@@ -1,8 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Card, CardBody, Image, Text, Stack, Heading, Input, Center, InputGroup, InputLeftElement, Box, IconButton 
-} from '@chakra-ui/react';
+import { Card, CardBody, Image, Text, Stack, Heading, Input, Center, InputGroup, InputLeftElement, Box, IconButton } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import { BsCartPlusFill } from "react-icons/bs";
 import BooksContext from '../context/BooksProvider.jsx';
@@ -10,42 +8,14 @@ import { CartContext } from "../context/CartProvider";
 
 
 export const BookList = () => {
-  const { cart, setCart } = useContext(CartContext);
+  const { addItemToCart } = useContext(CartContext);
   const { Books } = useContext(BooksContext);
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
 
- 
-  useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem('cart'));
-    if (storedCart) {
-      setCart(storedCart); 
-    }
-  }, [setCart]);
-
-  
   const filteredBooks = Books.filter(book => 
     book.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const addItemToCart = (book) => {
-    const existingItem = cart.find(item => item._id === book._id);
-
-    let updatedCart;
-    if (existingItem) {
-      updatedCart = cart.map(item =>
-        item._id === book._id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      );
-    } else {
-      updatedCart = [...cart, { ...book, quantity: 1 }];
-    }
-
-    setCart(updatedCart);
-    localStorage.setItem('cart', JSON.stringify(updatedCart)); 
-  };
-
 
   return (
     <div>
@@ -129,7 +99,7 @@ export const BookList = () => {
                 }}
                 onClick={(e) => {
                   e.stopPropagation(); 
-                  addItemToCart(book);
+                  addItemToCart(book); 
                 }}
               />
             </Box>

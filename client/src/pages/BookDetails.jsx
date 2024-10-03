@@ -1,12 +1,17 @@
-import React,{useEffect, useState} from 'react';
+import React,{useEffect, useState,useContext} from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardHeader, CardBody, CardFooter , Stack , Heading , Button , Image , Text,Badge } from '@chakra-ui/react'
 import axios from 'axios';
+import { CartContext } from "../context/CartProvider";
 
 
 const BookDetails = () => {
+
+
   const { id } = useParams();
   const [book, setBook] = useState([]);
+  const { addItemToCart } = useContext(CartContext);
+
   useEffect(() => {
     const fetchBook = async ()=>{
       try{
@@ -47,15 +52,12 @@ const BookDetails = () => {
           <CardBody>
                 <Heading size='md'>{book.title}</Heading>
                 <Text py='2'>{book.author}</Text>
-                {/* // TODO: ADD THE DESCRIPTION HERE !! */}
                 <Text py='2'>
-                  Caffè latte is a coffee beverage of Italian origin made with espresso
-                  and steamed milk.
+                 {book.description}
                 </Text>
                 <Text py={2}>
                 <strong>Price:</strong>   <span style={{color:'green', fontWeight:'bold'}}>${book.price}</span>
                 </Text>
-                {/* // -- TODO: ---------------------------- */}
                 <Text py={2}>
                 <strong>Publish Date</strong> : {formattedDate}
                 </Text>
@@ -83,7 +85,10 @@ const BookDetails = () => {
             <Button variant='solid' colorScheme='blue' >
               Buy
             </Button>
-            <Button variant='ghost' colorScheme='blue' marginLeft={'6px'} >
+            <Button onClick={(e) => {
+                  e.stopPropagation(); 
+                  addItemToCart(book); 
+                }} variant='ghost' colorScheme='blue' marginLeft={'6px'} >
               Add to Cart
             </Button>
           </CardFooter>
