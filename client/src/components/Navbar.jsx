@@ -64,13 +64,19 @@ export const Navbar = () => {
                     </Box>
                   </PopoverTrigger>
                   <PopoverContent maxW="300px">
-                    <PopoverBody maxH="300px" overflowY="auto">
-                    <PopoverHeader display={'flex'} justifyContent={'space-between'}>
+                    <PopoverArrow />
+                    <PopoverHeader >
+                      <Box display={'flex'} justifyContent={'space-between'} >
                             <Text color={'black'} fontWeight={'bold'}>
                               Total Price 
                             </Text>
                             <Text color={'green'}>${totalPrice.toFixed(2)}</Text>
+                      </Box>
                     </PopoverHeader>
+                     
+                    <PopoverBody maxH="300px" overflowY="auto"  >
+
+
                       {cart && cart.length > 0 ? (
                         cart.map((item) => (
                           <Box key={item._id} mt={2}>
@@ -99,7 +105,9 @@ export const Navbar = () => {
                       )}
                     </PopoverBody>
                     <PopoverFooter>
-                      <Button backgroundColor={'#85ff8d'} _hover={{ backgroundColor: "#41ff4e" }} width="100%">
+                      <Button backgroundColor={'#85ff8d'} _hover={{ backgroundColor: "#41ff4e" }} width="100%" onClick={()=>{
+                        navigate('/payment');
+                      }}>
                         Proceeding
                       </Button>
                     </PopoverFooter>
@@ -182,9 +190,9 @@ export const Navbar = () => {
                       )}
                     </PopoverBody>
                     <PopoverFooter>
-                      <Button backgroundColor={'#85ff8d'} _hover={{ backgroundColor: "#41ff4e" }} width="100%" onClick={()=>{
+                      <Button isDisabled={ totalQuantity >= 1 ? false : true}  backgroundColor={'#85ff8d'} _hover={{ backgroundColor: "#41ff4e" }} width="100%" onClick={()=>{
                         navigate('/payment');
-                      }}>
+                      }}   >
                         Proceeding
                       </Button>
                     </PopoverFooter>
