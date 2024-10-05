@@ -3,11 +3,11 @@ import { useParams } from 'react-router-dom';
 import { Card, CardHeader, CardBody, CardFooter , Stack , Heading , Button , Image , Text,Badge } from '@chakra-ui/react'
 import axios from 'axios';
 import { CartContext } from "../context/CartProvider";
-
+import { useNavigate } from 'react-router-dom';
 
 const BookDetails = () => {
 
-
+  const navigate = useNavigate();
   const { id } = useParams();
   const [book, setBook] = useState([]);
   const { addItemToCart } = useContext(CartContext);
@@ -82,7 +82,9 @@ const BookDetails = () => {
            </CardBody>
 
           <CardFooter>
-            <Button variant='solid' colorScheme='blue' >
+            <Button variant='solid' colorScheme='blue' onClick={()=>{
+              navigate(`/payment/${id}`);
+            }} >
               Buy
             </Button>
             <Button onClick={(e) => {

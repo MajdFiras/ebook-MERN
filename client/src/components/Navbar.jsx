@@ -1,17 +1,15 @@
 import React, { useContext } from 'react';
-import { Flex, Box, Heading, UnorderedList, ListItem, Link, Button, IconButton, Text, Image, Badge } from '@chakra-ui/react';
+import { Flex, Box, Heading, UnorderedList, ListItem, Link, Button, IconButton, Text, Image, Badge, Divider } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { FaCartShopping } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
-import { Popover, PopoverTrigger, PopoverContent, PopoverBody } from '@chakra-ui/react';
+import { Popover, PopoverTrigger, PopoverContent, PopoverBody, PopoverFooter , PopoverHeader ,PopoverArrow} from '@chakra-ui/react';
 import { CartContext } from "../context/CartProvider";
 
-
-
 export const Navbar = () => {
-
-  const { cart, handleRemoveItem } = useContext(CartContext);
+  
+  const { cart, handleRemoveItem,calculateTotalPrice } = useContext(CartContext);
   const navigate = useNavigate();
   const isUserSignIn = !!localStorage.getItem('token');
   
@@ -21,10 +19,12 @@ export const Navbar = () => {
   };
 
   const totalQuantity = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const totalPrice = calculateTotalPrice();
+
 
   return (
-    <Box bg='#ffffff' color='white'>
-      <Flex
+    <Box bg='#ffffff' color='white' position={'sticky'} top={'0'} zIndex={100} >
+      <Flex 
         justify='space-between'
         align='center'
         px={8}
@@ -63,12 +63,18 @@ export const Navbar = () => {
                       </Badge>
                     </Box>
                   </PopoverTrigger>
-                  <PopoverContent>
-                    <PopoverBody>
+                  <PopoverContent maxW="300px">
+                    <PopoverBody maxH="300px" overflowY="auto">
+                    <PopoverHeader display={'flex'} justifyContent={'space-between'}>
+                            <Text color={'black'} fontWeight={'bold'}>
+                              Total Price 
+                            </Text>
+                            <Text color={'green'}>${totalPrice.toFixed(2)}</Text>
+                    </PopoverHeader>
                       {cart && cart.length > 0 ? (
                         cart.map((item) => (
-                          <Box key={item._id} marginTop={'10%'}>
-                            <Flex alignItems="center" justifyContent="space-between" mb={2} backgroundColor={'#f6f6f6'} padding={'10px'}>
+                          <Box key={item._id} mt={2}>
+                            <Flex alignItems="center" justifyContent="space-between" mb={2} bg={'#f6f6f6'} p={'10px'}>
                               <Image
                                 src={item.cover}
                                 alt={item.title}
@@ -89,13 +95,14 @@ export const Navbar = () => {
                           </Box>
                         ))
                       ) : (
-                        <Text marginTop={'10px'} textAlign={'center'} color={'black'}>No items in the cart.</Text>
+                        <Text mt={2} textAlign={'center'} color={'black'}>No items in the cart.</Text>
                       )}
-
-                      <Button backgroundColor={'#85ff8d'} _hover={{ backgroundColor: "#41ff4e" }} width="100%" mt={4}>
+                    </PopoverBody>
+                    <PopoverFooter>
+                      <Button backgroundColor={'#85ff8d'} _hover={{ backgroundColor: "#41ff4e" }} width="100%">
                         Proceeding
                       </Button>
-                    </PopoverBody>
+                    </PopoverFooter>
                   </PopoverContent>
                 </Popover>
               </ListItem>
@@ -133,12 +140,24 @@ export const Navbar = () => {
                       </Badge>
                     </Box>
                   </PopoverTrigger>
-                  <PopoverContent>
-                    <PopoverBody>
+                  <PopoverContent maxW="300px">
+                    <PopoverArrow />
+                    <PopoverHeader >
+                      <Box display={'flex'} justifyContent={'space-between'} >
+                            <Text color={'black'} fontWeight={'bold'}>
+                              Total Price 
+                            </Text>
+                            <Text color={'green'}>${totalPrice.toFixed(2)}</Text>
+                      </Box>
+                    </PopoverHeader>
+                     
+                    <PopoverBody maxH="300px" overflowY="auto"  >
+
+
                       {cart && cart.length > 0 ? (
                         cart.map((item) => (
-                          <Box key={item._id} marginTop={'10%'}>
-                            <Flex alignItems="center" justifyContent="space-between" mb={2} backgroundColor={'#f6f6f6'} padding={'10px'}>
+                          <Box key={item._id} mt={2}>
+                            <Flex alignItems="center" justifyContent="space-between" mb={2} bg={'#f6f6f6'} p={'10px'}>
                               <Image
                                 src={item.cover}
                                 alt={item.title}
@@ -159,13 +178,16 @@ export const Navbar = () => {
                           </Box>
                         ))
                       ) : (
-                        <Text marginTop={'10px'} textAlign={'center'} color={'black'}>No items in the cart.</Text>
+                        <Text mt={2} textAlign={'center'} color={'black'}>No items in the cart.</Text>
                       )}
-
-                      <Button backgroundColor={'#85ff8d'} _hover={{ backgroundColor: "#41ff4e" }} width="100%" mt={4}>
+                    </PopoverBody>
+                    <PopoverFooter>
+                      <Button backgroundColor={'#85ff8d'} _hover={{ backgroundColor: "#41ff4e" }} width="100%" onClick={()=>{
+                        navigate('/payment');
+                      }}>
                         Proceeding
                       </Button>
-                    </PopoverBody>
+                    </PopoverFooter>
                   </PopoverContent>
                 </Popover>
               </ListItem>
