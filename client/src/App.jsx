@@ -7,6 +7,8 @@ import  SignUp  from "./pages/SignUp"
 import  Account  from "./pages/Account"
 import BookDetails from "./pages/BookDetails"
 import Payment from './pages/Payment'
+import Footer from './components/Footer'
+
 function App() {
   const isUserSignIn = !!localStorage.getItem("token")
   return (
@@ -22,6 +24,8 @@ function App() {
       <Route path="/book/bookdetails/:id" element={<BookDetails/>}/>
       <Route path="/payment/:id?" element={<Payment/>}/>
     </Routes>
+    <Footer/>
+
     </>
     
   

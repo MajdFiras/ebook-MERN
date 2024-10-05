@@ -42,7 +42,7 @@ export const Navbar = () => {
         <UnorderedList display='flex' listStyleType='none' m={0} gap='20px' alignItems='center'>
           {isUserSignIn ? (
             <>
-              <ListItem display="flex" alignItems="center">
+             <ListItem display="flex" alignItems="center">
                 <Popover>
                   <PopoverTrigger>
                     <Box position="relative">
@@ -105,9 +105,9 @@ export const Navbar = () => {
                       )}
                     </PopoverBody>
                     <PopoverFooter>
-                      <Button backgroundColor={'#85ff8d'} _hover={{ backgroundColor: "#41ff4e" }} width="100%" onClick={()=>{
+                      <Button isDisabled={ totalQuantity >= 1 ? false : true}  backgroundColor={'#85ff8d'} _hover={{ backgroundColor: "#41ff4e" }} width="100%" onClick={()=>{
                         navigate('/payment');
-                      }}>
+                      }}   >
                         Proceeding
                       </Button>
                     </PopoverFooter>

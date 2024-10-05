@@ -1,31 +1,16 @@
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; // Adjusted import as a named import
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-
-// NOTE :ChakraUI componenets Imports
-import { Center, Box ,Avatar, Text, Divider, Stack} from '@chakra-ui/react';
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-} from '@chakra-ui/react'
-// ==================================
-
-// NOTE: Icons imports from react-icons
-import { PiUserCircleFill } from "react-icons/pi";
-import { MdEmail } from "react-icons/md";
-import { MdLocalPhone } from "react-icons/md";
-import { FaAddressCard } from "react-icons/fa";
-// ====================================
-
+// Chakra UI imports
+import { Center, Box, Avatar, Text, Divider, Stack, IconButton, Input, ButtonGroup, Flex } from '@chakra-ui/react';
+import { EditIcon, CheckIcon, CloseIcon } from '@chakra-ui/icons';
 
 const Account = () => {
-
   const [userId, setUserId] = useState(null);
   const [userInfo, setUserinfo] = useState(null);
+  const [isEditing, setIsEditing] = useState(false); 
+  const usernameInputRef = useRef(null); 
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -52,34 +37,137 @@ const Account = () => {
     }
   }, [userId]); 
 
-  
-  
+
+  const handleSave = () => {
+    setIsEditing(false);
+    
+  };
+
+ 
+  const handleCancel = () => {
+    setIsEditing(false);
+  };
+
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setTimeout(() => {
+      if (usernameInputRef.current) {
+        usernameInputRef.current.focus();
+      }
+    }, 100); 
+  };
+
   return (
     <Center>
-      <Box boxShadow='md'  margin={'4%'} borderRadius={'10px'} backgroundColor={'#f2f2f2'} height={'300px'} width={'500px'}>
+      <Box boxShadow='md' margin={'4%'} borderRadius={'10px'} backgroundColor={'#f2f2f2'} height={'auto'} width={'500px'} padding={'20px'}>
+        <Flex justifyContent={'flex-end'} padding={'10px'}>
+          {!isEditing ? (
+            <IconButton
+              aria-label='Edit user info'
+              icon={<EditIcon />}
+              size='sm'
+              onClick={handleEdit}
+            />
+          ) : (
+            <ButtonGroup size="sm">
+              <IconButton aria-label='Save changes' icon={<CheckIcon />} onClick={handleSave} />
+              <IconButton aria-label='Cancel changes' icon={<CloseIcon />} onClick={handleCancel} />
+            </ButtonGroup>
+          )}
+        </Flex>
         <Center padding={'4%'}>
           <Avatar size='xl' name={userInfo?.username} src={userInfo?.avatar} />
         </Center>
-        <Divider borderColor={'#c8c8c8'}  />
+        <Divider borderColor={'#c8c8c8'} />
         <br />
-        <Stack marginLeft={'5%'} spacing={4} display={'flex'} flexDirection={'column'} >
-          <Text><span style={{fontWeight: 'bold'}}>Username:</span> {userInfo ? userInfo.username : 'No username found'}</Text>
-          <Text><span style={{fontWeight: 'bold'}}>Email:</span> {userInfo ? userInfo.email : 'No user Email found'}</Text>
-          <Accordion allowToggle>
-              <AccordionItem>
-                <h2>
-                  <AccordionButton>
-                    <Box as='span' flex='1' textAlign='left'>
-                      Address Details
-                    </Box>
-                    <AccordionIcon />
-                  </AccordionButton>
-                </h2>
-               <AccordionPanel pb={4}>
-                  
-               </AccordionPanel>
-              </AccordionItem>
-          </Accordion>
+        <Stack paddingX={'5%'} spacing={4} display={'flex'} flexDirection={'column'}>
+          {/* Editable fields */}
+          <Flex flexDirection="column">
+            <Text fontWeight='bold'>Username:</Text>
+            {isEditing ? (
+              <Input
+                ref={usernameInputRef}
+                defaultValue={userInfo?.username || ''}
+                placeholder='Enter username'
+              />
+            ) : (
+              <Text>{userInfo?.username || 'No username found'}</Text>
+            )}
+          </Flex>
+          
+          <Flex flexDirection="column">
+            <Text fontWeight='bold'>Email:</Text>
+            {isEditing ? (
+              <Input
+                defaultValue={userInfo?.email || ''}
+                placeholder='Enter email'
+              />
+            ) : (
+              <Text>{userInfo?.email || 'No user email found'}</Text>
+            )}
+          </Flex>
+          
+          <Flex flexDirection="column">
+            <Text fontWeight='bold'>Country:</Text>
+            {isEditing ? (
+              <Input
+                defaultValue={userInfo?.address?.country || ''}
+                placeholder='Enter country'
+              />
+            ) : (
+              <Text>{userInfo?.address?.country || 'Not provided'}</Text>
+            )}
+          </Flex>
+
+          <Flex flexDirection="column">
+            <Text fontWeight='bold'>City:</Text>
+            {isEditing ? (
+              <Input
+                defaultValue={userInfo?.address?.city || ''}
+                placeholder='Enter city'
+              />
+            ) : (
+              <Text>{userInfo?.address?.city || 'Not provided'}</Text>
+            )}
+          </Flex>
+
+          <Flex flexDirection="column">
+            <Text fontWeight='bold'>Street:</Text>
+            {isEditing ? (
+              <Input
+                defaultValue={userInfo?.address?.street || ''}
+                placeholder='Enter street'
+              />
+            ) : (
+              <Text>{userInfo?.address?.street || 'Not provided'}</Text>
+            )}
+          </Flex>
+
+          <Flex flexDirection="column">
+            <Text fontWeight='bold'>Building Number:</Text>
+            {isEditing ? (
+              <Input
+                defaultValue={userInfo?.address?.buildingNumber || ''}
+                placeholder='Enter building number'
+              />
+            ) : (
+              <Text>{userInfo?.address?.buildingNumber || 'Not provided'}</Text>
+            )}
+          </Flex>
+
+          <Flex flexDirection="column">
+            <Text fontWeight='bold'>Residential Complex:</Text>
+            {isEditing ? (
+              <Input
+                defaultValue={userInfo?.address?.residentialComplex || ''}
+                placeholder='Enter residential complex'
+               
+              />
+            ) : (
+              <Text>{userInfo?.address?.residentialComplex || 'Not provided'}</Text>
+            )}
+          </Flex>
         </Stack>
       </Box>
     </Center>
@@ -87,4 +175,3 @@ const Account = () => {
 };
 
 export default Account;
-  
