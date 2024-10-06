@@ -1,10 +1,11 @@
 import { createContext, useState, useEffect } from "react";
+import { useToast } from '@chakra-ui/react'
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
     const [cart, setCart] = useState([]);
-
+    const toast = useToast()
     useEffect(() => {
         const storedCart = JSON.parse(localStorage.getItem('cart'));
         if (storedCart) {
@@ -28,6 +29,13 @@ export const CartProvider = ({ children }) => {
 
         setCart(updatedCart);
         localStorage.setItem('cart', JSON.stringify(updatedCart));
+        toast({
+            title: 'Book Added',
+            description: "your book has been added successfully",
+            status: 'success',
+            duration: 2000,
+            isClosable: false,
+          })
     };
 
     const handleRemoveItem = (item) => {
@@ -43,6 +51,13 @@ export const CartProvider = ({ children }) => {
         }
         setCart(updatedCart);
         localStorage.setItem('cart', JSON.stringify(updatedCart));
+        toast({
+            title: 'Book Deleted',
+            description: "your book has been Deleted successfully",
+            status: 'warning',
+            duration: 2000,
+            isClosable: false,
+          })
     };
 
     const calculateTotalPrice = () => {
