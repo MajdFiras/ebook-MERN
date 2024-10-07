@@ -31,7 +31,7 @@ export const CartProvider = ({ children }) => {
         localStorage.setItem('cart', JSON.stringify(updatedCart));
         toast({
             title: 'Book Added',
-            description: "your book has been added successfully",
+            description: "Your Book has been Added Successfully",
             status: 'success',
             duration: 2000,
             isClosable: false,
@@ -53,7 +53,7 @@ export const CartProvider = ({ children }) => {
         localStorage.setItem('cart', JSON.stringify(updatedCart));
         toast({
             title: 'Book Deleted',
-            description: "your book has been Deleted successfully",
+            description: "Your Book has been Deleted Successfully",
             status: 'warning',
             duration: 2000,
             isClosable: false,

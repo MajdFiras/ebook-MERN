@@ -5,17 +5,29 @@ import { SearchIcon } from '@chakra-ui/icons';
 import { BsCartPlusFill } from "react-icons/bs";
 import BooksContext from '../context/BooksProvider.jsx';
 import { CartContext } from "../context/CartProvider";
-
+import Pagination from './Pagination';  // Import Pagination component
 
 export const BookList = () => {
   const { addItemToCart } = useContext(CartContext);
   const { Books } = useContext(BooksContext);
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const booksPerPage = 8;  
 
-  const filteredBooks = Books.filter(book => 
+  const filteredBooks = Books.filter(book =>
     book.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
+
+  const indexOfLastBook = currentPage * booksPerPage;
+  const indexOfFirstBook = indexOfLastBook - booksPerPage;
+  const currentBooks = filteredBooks.slice(indexOfFirstBook, indexOfLastBook);
+
+  const onPageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <div>
@@ -41,8 +53,8 @@ export const BookList = () => {
       </Center>
 
       <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around', marginTop: '20px' }}>
-        {filteredBooks.length > 0 ? (
-          filteredBooks.map((book) => (
+        {currentBooks.length > 0 ? (
+          currentBooks.map((book) => (
             <Box
               position="relative"
               key={book._id}
@@ -58,7 +70,7 @@ export const BookList = () => {
               <Card
                 maxW="sm"
                 _groupHover={{
-                  transform: 'scale(1.05)', 
+                  transform: 'scale(1.05)',
                   transition: 'all 0.4s ease-in-out',
                   boxShadow: 'xl',
                 }}
@@ -92,14 +104,14 @@ export const BookList = () => {
                 borderRadius="full"
                 size="lg"
                 _groupHover={{
-                  transform: 'scale(1.4)',  
+                  transform: 'scale(1.4)',
                   transition: 'all 0.4s ease-in-out',
-                  bottom: '3%',  
+                  bottom: '3%',
                   right: '3%',
                 }}
                 onClick={(e) => {
-                  e.stopPropagation(); 
-                  addItemToCart(book); 
+                  e.stopPropagation();
+                  addItemToCart(book);
                 }}
               />
             </Box>
@@ -108,6 +120,14 @@ export const BookList = () => {
           <p>No books available :(</p>
         )}
       </div>
+
+      <Center>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+        />
+      </Center>
     </div>
   );
 };

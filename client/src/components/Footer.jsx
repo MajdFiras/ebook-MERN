@@ -10,7 +10,7 @@ const Footer = () => {
           <Box>
             <Text fontSize={'3xl'} color={'white'}>PAPER</Text>
           </Box> 
-          <Box>
+          <Box >
             <ul>
               <li> <Text color={'white'}>Contact Us</Text> </li>
               <li> <Text color={'white'}>FAQ</Text> </li>
