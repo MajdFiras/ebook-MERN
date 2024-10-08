@@ -7,6 +7,9 @@ import BooksContext from '../context/BooksProvider.jsx';
 import { CartContext } from "../context/CartProvider";
 import Pagination from './Pagination';  // Import Pagination component
 
+
+
+
 export const BookList = () => {
   const { addItemToCart } = useContext(CartContext);
   const { Books } = useContext(BooksContext);

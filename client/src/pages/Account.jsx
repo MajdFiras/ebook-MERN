@@ -1,31 +1,31 @@
-import { jwtDecode } from "jwt-decode"; // Adjusted import as a named import
-import axios from 'axios';
-import React, { useState, useEffect, useRef } from 'react';
-
-// Chakra UI imports
-import { Center, Box, Avatar, Text, Divider, Stack, IconButton, Input, ButtonGroup, Flex } from '@chakra-ui/react';
+import { useState, useRef, useEffect } from 'react';
+import { Center, Box, Avatar, Icon, Text, Divider, Stack, IconButton, Input, ButtonGroup, Flex } from '@chakra-ui/react';
 import { EditIcon, CheckIcon, CloseIcon } from '@chakra-ui/icons';
+import { FaCamera } from 'react-icons/fa';
+import {jwtDecode} from 'jwt-decode';
+import axios from 'axios';
 
 const Account = () => {
   const [userId, setUserId] = useState(null);
-  const [userInfo, setUserinfo] = useState(null);
-  const [isEditing, setIsEditing] = useState(false); 
-  const usernameInputRef = useRef(null); 
+  const [userInfo, setUserInfo] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const usernameInputRef = useRef(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       const decoded = jwtDecode(token);
-      setUserId(decoded.userId);  
+      setUserId(decoded.userId);
     }
-  }, []); 
+  }, []);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         if (userId) {
           const response = await axios.get(`http://localhost:5000/api/auth/user/${userId}`);
-          setUserinfo(response.data);
+          setUserInfo(response.data);
         }
       } catch (err) {
         console.log(err);
@@ -35,19 +35,15 @@ const Account = () => {
     if (userId) {
       fetchUserData();
     }
-  }, [userId]); 
-
+  }, [userId]);
 
   const handleSave = () => {
     setIsEditing(false);
-    
   };
 
- 
   const handleCancel = () => {
     setIsEditing(false);
   };
-
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -55,119 +51,83 @@ const Account = () => {
       if (usernameInputRef.current) {
         usernameInputRef.current.focus();
       }
-    }, 100); 
+    }, 100);
   };
+
+  const renderFormField = (label, value, placeholder) => (
+    <Flex flexDirection="column">
+      <Text fontWeight="bold">{label}:</Text>
+      {isEditing ? (
+        <Input defaultValue={value || ''} placeholder={placeholder} />
+      ) : (
+        <Text>{value || `Not provided`}</Text>
+      )}
+    </Flex>
+  );
 
   return (
     <Center>
-      <Box boxShadow='md' margin={'4%'} borderRadius={'10px'} backgroundColor={'#f2f2f2'} height={'auto'} width={'500px'} padding={'20px'}>
-        <Flex justifyContent={'flex-end'} padding={'10px'}>
+      <Box boxShadow="md" margin="4%" borderRadius="10px" backgroundColor="#f2f2f2" height="auto" width="500px" padding="20px">
+        <Flex justifyContent="flex-end" padding="10px">
           {!isEditing ? (
             <IconButton
-              aria-label='Edit user info'
+              aria-label="Edit user info"
               icon={<EditIcon />}
-              size='sm'
+              size="sm"
               onClick={handleEdit}
             />
           ) : (
             <ButtonGroup size="sm">
-              <IconButton aria-label='Save changes' icon={<CheckIcon />} onClick={handleSave} />
-              <IconButton aria-label='Cancel changes' icon={<CloseIcon />} onClick={handleCancel} />
+              <IconButton aria-label="Save changes" icon={<CheckIcon />} onClick={handleSave} />
+              <IconButton aria-label="Cancel changes" icon={<CloseIcon />} onClick={handleCancel} />
             </ButtonGroup>
           )}
         </Flex>
-        <Center padding={'4%'}>
-          <Avatar size='xl' name={userInfo?.username} src={userInfo?.avatar} />
+
+        <Center padding="4%">
+          {/* Avatar with hover effect */}
+          <Box
+            position="relative"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            width="fit-content"
+          >
+            <Avatar size="xl" name={userInfo?.username} src={userInfo?.avatar} />
+            {isHovered && (
+              <Box
+                position="absolute"
+                top="0"
+                left="0"
+                width="100%"
+                height="100%"
+                backgroundColor="rgba(0, 0, 0, 0.5)"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                justifyContent="center"
+                borderRadius="full"
+                color="white"
+                opacity={isHovered ? 1 : 0}
+                transition="opacity 0.3s ease"
+                cursor={'pointer'}
+              >
+                <Icon as={FaCamera} boxSize={6} />
+                <Text mt={2}>Change</Text>
+              </Box>
+            )}
+          </Box>
         </Center>
-        <Divider borderColor={'#c8c8c8'} />
+
+        <Divider borderColor="#c8c8c8" />
         <br />
-        <Stack paddingX={'5%'} spacing={4} display={'flex'} flexDirection={'column'}>
-          {/* Editable fields */}
-          <Flex flexDirection="column">
-            <Text fontWeight='bold'>Username:</Text>
-            {isEditing ? (
-              <Input
-                ref={usernameInputRef}
-                defaultValue={userInfo?.username || ''}
-                placeholder='Enter username'
-              />
-            ) : (
-              <Text>{userInfo?.username || 'No username found'}</Text>
-            )}
-          </Flex>
-          
-          <Flex flexDirection="column">
-            <Text fontWeight='bold'>Email:</Text>
-            {isEditing ? (
-              <Input
-                defaultValue={userInfo?.email || ''}
-                placeholder='Enter email'
-              />
-            ) : (
-              <Text>{userInfo?.email || 'No user email found'}</Text>
-            )}
-          </Flex>
-          
-          <Flex flexDirection="column">
-            <Text fontWeight='bold'>Country:</Text>
-            {isEditing ? (
-              <Input
-                defaultValue={userInfo?.address?.country || ''}
-                placeholder='Enter country'
-              />
-            ) : (
-              <Text>{userInfo?.address?.country || 'Not provided'}</Text>
-            )}
-          </Flex>
-
-          <Flex flexDirection="column">
-            <Text fontWeight='bold'>City:</Text>
-            {isEditing ? (
-              <Input
-                defaultValue={userInfo?.address?.city || ''}
-                placeholder='Enter city'
-              />
-            ) : (
-              <Text>{userInfo?.address?.city || 'Not provided'}</Text>
-            )}
-          </Flex>
-
-          <Flex flexDirection="column">
-            <Text fontWeight='bold'>Street:</Text>
-            {isEditing ? (
-              <Input
-                defaultValue={userInfo?.address?.street || ''}
-                placeholder='Enter street'
-              />
-            ) : (
-              <Text>{userInfo?.address?.street || 'Not provided'}</Text>
-            )}
-          </Flex>
-
-          <Flex flexDirection="column">
-            <Text fontWeight='bold'>Building Number:</Text>
-            {isEditing ? (
-              <Input
-                defaultValue={userInfo?.address?.buildingNumber || ''}
-                placeholder='Enter building number'
-              />
-            ) : (
-              <Text>{userInfo?.address?.buildingNumber || 'Not provided'}</Text>
-            )}
-          </Flex>
-
-          <Flex flexDirection="column">
-            <Text fontWeight='bold'>Residential Complex:</Text>
-            {isEditing ? (
-              <Input
-                defaultValue={userInfo?.address?.residentialComplex || ''}
-                placeholder='Enter residential complex'
-               
-              />
-            ) : (
-              <Text>{userInfo?.address?.residentialComplex || 'Not provided'}</Text>
-            )}
-          </Flex>
+        <Stack paddingX="5%" spacing={4} display="flex" flexDirection="column">
+          {renderFormField('Username', userInfo?.username, 'Enter username')}
+          {renderFormField('Email', userInfo?.email, 'Enter email')}
+          {renderFormField('Country', userInfo?.address?.country, 'Enter country')}
+          {renderFormField('City', userInfo?.address?.city, 'Enter city')}
+          {renderFormField('Street', userInfo?.address?.street, 'Enter street')}
+          {renderFormField('Building Number', userInfo?.address?.buildingNumber, 'Enter building number')}
+          {renderFormField('Residential Complex', userInfo?.address?.residentialComplex, 'Enter residential complex')}
         </Stack>
       </Box>
     </Center>
