@@ -33,23 +33,23 @@ const UserSchema = new mongoose.Schema({
     address: {
         country: {
             type: String,
-            required: false, // Make it optional
+            required: false, 
         },
         city: {
             type: String,
-            required: false, // Make it optional
+            required: false, 
         },
         street: {
             type: String,
-            required: false, // Make it optional
+            required: false, 
         },
         buildingNumber: {
             type: String,
-            required: false, // Make it optional
+            required: false, 
         },
         residentialComplex: {
             type: String,
-            required: false, // Make it optional
+            required: false, 
         },
     }
 });

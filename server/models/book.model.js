@@ -42,7 +42,15 @@ const bookSchema = new mongoose.Schema({
         enum: ['Available', 'Out of Stock', 'Pre-order'],
         default: 'Available'
     },
-    tags: [String]
+    tags: [String], 
+    comments: [
+        {
+            type: String,
+             required: false,
+             created : {type: Date , default : Date.now},
+             postedBy : { type: ObjectId , ref: 'User' }
+        }
+    ]
 
 }, { timestamps: true });
 
