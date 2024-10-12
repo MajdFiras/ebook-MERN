@@ -1,16 +1,18 @@
 import mongoose from "mongoose";
 
+const { Schema } = mongoose;    
+const { ObjectId } = Schema.Types
 
 const bookSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true
     },
-    author :{
+    author: {
         type: String,
         required: true
     },
-    description :{
+    description: {
         type: String,
     },
     price: {
@@ -21,16 +23,14 @@ const bookSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    amount:{
+    amount: {
         type: Number,
     },
     publishedDate: {
         type: Date,
-        required: false
     },
     genre: {
         type: String,
-        required: false
     },
     isbn: {
         type: String,
@@ -45,15 +45,14 @@ const bookSchema = new mongoose.Schema({
     tags: [String], 
     comments: [
         {
-            type: String,
-             required: false,
-             created : {type: Date , default : Date.now},
-             postedBy : { type: ObjectId , ref: 'User' }
+            comment: { type: String, required: true }, // Store comment text
+            postedBy: { type: ObjectId, ref: 'User', required: true }, // Reference to User model
+            created: { type: Date, default: Date.now } // Automatically set created date
         }
     ]
-
 }, { timestamps: true });
 
 const Book = mongoose.model("Book", bookSchema);
 
 export default Book;
+

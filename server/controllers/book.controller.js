@@ -10,7 +10,6 @@ export const getAllBooks = async (req,res)=>{
         res.status(500).json({success:false,message:err.message})
         console.log("Error in getting books",err.message)
      }
-    
 
 };
 
@@ -77,3 +76,75 @@ export const getBookById = async (req,res)=>{
         res.status(500).json({success:false,message:"Server Error"});
     }
 }
+
+// NOTE: post comment in the books
+export const postComment = async (req, res) => {
+    const { bookId } = req.params;
+    const { comment, userId } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(bookId)) {
+        return res.status(400).json({ success: false, message: "Invalid Book ID" });
+    }
+
+    if (!comment || !userId) {
+        return res.status(400).json({ success: false, message: "Comment and User ID are required" });
+    }
+
+    try {
+        // Create the new comment
+        const newComment = {
+            comment,
+            postedBy: userId,
+            created: new Date(),
+        };
+
+        // Update the book by adding the new comment to the comments array
+        const updatedBook = await Book.findByIdAndUpdate(
+            bookId,
+            { $push: { comments: newComment } },
+            { new: true } // Return the updated document
+        ).populate('comments.postedBy', 'name email'); // Optionally, populate user details in the response
+
+        if (!updatedBook) {
+            return res.status(404).json({ success: false, message: "Book not found" });
+        }
+
+        res.status(200).json({ success: true, data: updatedBook.comments });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
+
+// NOTE : get the comments in the books
+
+
+
+export const getBookComments = async (req, res) => {
+    const { bookId } = req.params;
+
+    // Validate if bookId is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(bookId)) {
+        return res.status(400).json({ success: false, message: "Invalid Book ID" });
+    }
+
+    try {
+        // Find the book by ID and populate the postedBy field in the comments
+        const book = await Book.findById(bookId).populate({
+            path: 'comments.postedBy',
+            select: 'name email', // You can select the fields you want from the user document
+        });
+
+        // If the book is not found, return a 404 response
+        if (!book) {
+            return res.status(404).json({ success: false, message: "Book not found" });
+        }
+
+        // Return the comments associated with the book
+        res.status(200).json({ success: true, comments: book.comments });
+
+    } catch (err) {
+        console.error(err); // Log the error for debugging
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
+};

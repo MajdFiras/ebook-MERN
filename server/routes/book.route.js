@@ -1,5 +1,5 @@
 import express from 'express';
-import { createBook, deleteBook, getAllBooks, updateBook , getBookById } from '../controllers/book.controller.js';
+import { createBook, deleteBook, getAllBooks, updateBook , getBookById , postComment, getBookComments} from '../controllers/book.controller.js';
 const router = express.Router();
 
 /* Get all Books*/
@@ -19,5 +19,11 @@ router.patch("/:id", updateBook)
 
 /* Get a Book by id  */
 router.get("/:id",getBookById )
+
+/* Create New Comment  */
+router.post("/comment/:bookId",postComment)
+
+/* Get the comments from certien book */
+router.get("/comment/:bookId",getBookComments)
 
 export default router;
