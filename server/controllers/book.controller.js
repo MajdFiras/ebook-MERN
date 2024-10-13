@@ -132,7 +132,7 @@ export const getBookComments = async (req, res) => {
         // Find the book by ID and populate the postedBy field in the comments
         const book = await Book.findById(bookId).populate({
             path: 'comments.postedBy',
-            select: 'name email', // You can select the fields you want from the user document
+            select: 'username email avatar', // You can select the fields you want from the user document
         });
 
         // If the book is not found, return a 404 response
