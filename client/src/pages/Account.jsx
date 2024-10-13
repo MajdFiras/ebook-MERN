@@ -1,44 +1,18 @@
-import { useState, useRef, useEffect } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { Center, Box, Avatar, Icon, Text, Divider, Stack, IconButton, Input, ButtonGroup, Flex } from '@chakra-ui/react';
 import { EditIcon, CheckIcon, CloseIcon } from '@chakra-ui/icons';
 import { FaCamera } from 'react-icons/fa';
-import {jwtDecode} from 'jwt-decode';
-import axios from 'axios';
+import UserContext from '../context/UserProvider'; // Import UserContext
 
 const Account = () => {
-  const [userId, setUserId] = useState(null);
-  const [userInfo, setUserInfo] = useState(null);
+  const { userInfo } = useContext(UserContext); // Access userInfo from context
   const [isEditing, setIsEditing] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const usernameInputRef = useRef(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const decoded = jwtDecode(token);
-      setUserId(decoded.userId);
-    }
-  }, []);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        if (userId) {
-          const response = await axios.get(`http://localhost:5000/api/auth/user/${userId}`);
-          setUserInfo(response.data);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    if (userId) {
-      fetchUserData();
-    }
-  }, [userId]);
-
   const handleSave = () => {
     setIsEditing(false);
+    // Optionally: call an API to save the changes
   };
 
   const handleCancel = () => {
@@ -85,7 +59,6 @@ const Account = () => {
         </Flex>
 
         <Center padding="4%">
-          {/* Avatar with hover effect */}
           <Box
             position="relative"
             onMouseEnter={() => setIsHovered(true)}
@@ -109,7 +82,7 @@ const Account = () => {
                 color="white"
                 opacity={isHovered ? 1 : 0}
                 transition="opacity 0.3s ease"
-                cursor={'pointer'}
+                cursor="pointer"
               >
                 <Icon as={FaCamera} boxSize={6} />
                 <Text mt={2}>Change</Text>
