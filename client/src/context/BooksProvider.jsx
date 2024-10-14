@@ -35,12 +35,27 @@ export const BooksProvider = ({ children }) => {
     }
   };
 
+
+
+  const addComment = async (bookId, userId, comment) => {
+    try {
+      const response = await axios.post(`http://localhost:5000/api/books/comment/${bookId}`, { userId, comment });      
+      setComments(prevComments => [...prevComments, response.data.comment]);
+      console.log('added seccessfully')
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+
+
+
   useEffect(() => {
     fetchBooks();
   }, []);
 
   return (
-    <BooksContext.Provider value={{ Books, book, fetchBook, comments, fetchComments }}>
+    <BooksContext.Provider value={{ Books, book, fetchBook, comments, fetchComments,addComment}}>
       {children}
     </BooksContext.Provider>
   );

@@ -1,20 +1,26 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, CardBody, CardFooter, Stack, Heading, Button, Image, Text, Badge, Wrap, WrapItem, Grid, GridItem, Avatar,Input} from '@chakra-ui/react';
+import { Card, CardBody, CardFooter, Stack, Heading, Button, Image, Text, Badge, Wrap, WrapItem, Grid, GridItem, Avatar, Input } from '@chakra-ui/react';
 import { CartContext } from "../context/CartProvider";
 import BooksContext from '../context/BooksProvider';
 import UserContext from '../context/UserProvider'; // Import UserContext
 
-
-
 const BookDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { book, fetchBook, comments, fetchComments } = useContext(BooksContext);
+  const { book, fetchBook, comments, fetchComments, addComment } = useContext(BooksContext);
   const { addItemToCart } = useContext(CartContext);
-  const { userInfo } = useContext(UserContext);
- 
+  const { userInfo,fetchUserInfo } = useContext(UserContext);
+  
 
+  // State to hold new comment input
+  const [newComment, setNewComment] = useState("");
+
+
+  useEffect(() => {
+    fetchUserInfo();
+    console.log(userInfo);
+  },[])
   useEffect(() => {
     fetchBook(id); 
   }, [id, fetchBook]);
@@ -32,6 +38,13 @@ const BookDetails = () => {
     month: 'long',
     day: 'numeric',
   });
+
+  const handleAddComment = () => {
+    if (newComment.trim()) {
+      addComment(id, userInfo._id, newComment); // Pass bookId, userId, and the comment
+      setNewComment(""); // Clear the input field after posting
+    }
+  };
 
   return (
     <div style={{ margin: '50px' }}>
@@ -80,67 +93,73 @@ const BookDetails = () => {
       
       {/* Comments Section */}
       <div style={{ marginTop: '20px' }}>
-  <Heading size='md'>Comments:</Heading>
-  {comments.length > 0 ? (
-    comments.map((comment, index) => (
-      <Grid
-        bg={'gray.100'}
-        padding={'20px'}
-        key={index}
-        h='auto'
-        templateColumns='repeat(15, 2fr)' 
-        gap={4} 
-        marginTop={'10px'}
-        alignItems='center'  
-      >
-        <GridItem colSpan={1} display="flex">
-          <Wrap>
-            <WrapItem>
-              <Avatar size='lg' name={comment.postedBy.username} src={comment.postedBy.avatar} />
-            </WrapItem>
-          </Wrap>
-        </GridItem>
-        <GridItem colSpan={5}>  {/* Take up the remaining space for comment text */}
-          <Text><strong>{comment.postedBy.username}:</strong> {comment.comment}</Text>
-          
-          <Text fontSize="sm" color="gray.500">Posted on: {new Date(comment.created).toLocaleString()}</Text>
-        </GridItem>
-      </Grid>
-    ))
-  ) : (
-    <Text>No comments yet.</Text>
-  )}
-  </div>
-  {!!localStorage.getItem("token") ? (<div>
-  <Grid
-        bg={'gray.100'}
-        padding={'20px'}
-        h='auto'
-        templateColumns='repeat(15, 2fr)'  
-        gap={4} 
-        marginTop={'10px'}
-        alignItems='center'  
-      >
-        <GridItem colSpan={1} display="flex"> 
-          <Wrap>
-            <WrapItem>
-              <Avatar size='lg' name={userInfo?.username}  src={userInfo?.avatar} />
-            </WrapItem>
-          </Wrap>
-        </GridItem>
-        <GridItem colSpan={5} display={'flex'} justifyContent={'center'} alignItems={'center'} >  
-            <Input
-              placeholder='Write a Comment...'
-              size='lg'
-              _placeholder={{ opacity: 1, color: 'gray.500' }}
-              variant={'outline'}
-              border={'#bcbfc8 1px solid'}
-            />
-            <Button colorScheme='teal'marginLeft={'2%'} >POST</Button>
-        </GridItem>
-      </Grid>
-  </div>) :(<div></div>)}
-    
+        <Heading size='md'>Comments:</Heading>
+        {comments.length > 0 ? (
+          comments.map((comment, index) => (
+            <Grid
+              bg={'gray.100'}
+              padding={'20px'}
+              key={index}
+              h='auto'
+              templateColumns='repeat(15, 2fr)' 
+              gap={4} 
+              marginTop={'10px'}
+              alignItems='center'  
+            >
+              <GridItem colSpan={1} display="flex">
+                <Wrap>
+                  <WrapItem>
+                    <Avatar size='lg' name={comment.postedBy.username} src={comment.postedBy.avatar} />
+                  </WrapItem>
+                </Wrap>
+              </GridItem>
+              <GridItem colSpan={5}>
+                <Text><strong>{comment.postedBy.username}:</strong> {comment.comment}</Text>
+                <Text fontSize="sm" color="gray.500">Posted on: {new Date(comment.created).toLocaleString()}</Text>
+              </GridItem>
+            </Grid>
+          ))
+        ) : (
+          <Text>No comments yet.</Text>
+        )}
+      </div>
+
+      {/* Add New Comment Section */}
+      {!!localStorage.getItem("token") ? (
+        <div>
+          <Grid
+            bg={'gray.100'}
+            padding={'20px'}
+            h='auto'
+            templateColumns='repeat(15, 2fr)'  
+            gap={4} 
+            marginTop={'10px'}
+            alignItems='center'  
+          >
+            <GridItem colSpan={1} display="flex"> 
+              <Wrap>
+                <WrapItem>
+                  <Avatar size='lg' name={userInfo?.username} src={userInfo?.avatar} />
+                </WrapItem>
+              </Wrap>
+            </GridItem>
+            <GridItem colSpan={5} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+              <Input
+                placeholder='Write a Comment...'
+                size='lg'
+                _placeholder={{ opacity: 1, color: 'gray.500' }}
+                variant={'outline'}
+                border={'#bcbfc8 1px solid'}
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)} // Update the state with the input value
+              />
+              <Button colorScheme='teal' marginLeft={'2%'} onClick={handleAddComment}>POST</Button>
+            </GridItem>
+          </Grid>
+        </div>
+      ) : (
+        <Text>You need to be logged in to post a comment.</Text>
+      )}
     </div>
   );
 };

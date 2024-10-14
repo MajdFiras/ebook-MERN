@@ -1,37 +1,35 @@
-// UserProvider.js
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import {jwtDecode} from 'jwt-decode'; // Fix import here
 
 const UserContext = createContext({});
 
 export const UserProvider = ({ children }) => {
-  const [userInfo, setUserInfo] = useState(null);  // Store user info
-  const [userId, setUserId] = useState(null);      // Store the user ID
-  // Function to fetch user information by userId
-  const fetchUserInfo = async (id) => {
+  const [userInfo, setUserInfo] = useState(null); 
+  const [userId, setUserId] = useState(null);
+
+  const fetchUserInfo = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/auth/user/${id}`);
-      setUserInfo(response.data);
-    } catch (err) {
-      console.error("Error fetching user data:", err);
+      const token = JSON.parse(localStorage.getItem('token')); 
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        setUserId(decodedToken.userId); // Fix here, decode the token to get the userId
+        const response = await axios.get(`http://localhost:5000/api/auth/user/${decodedToken.userId}`);
+        setUserInfo(response.data);
+      } else {
+        console.log("No token found");
+      }
+    } catch (error) {
+      console.error("Error fetching user info:", error);
     }
   };
 
-  // Function to check if the token exists and is valid
- 
-
   useEffect(() => {
-    checkLoginStatus(); // Check login status on mount
+    fetchUserInfo(); // Fetch user info when the component is mounted
   }, []);
 
-  useEffect(() => {
-    if (userId) {
-      fetchUserInfo(userId);
-    }
-  }, [userId]);
-
   return (
-    <UserContext.Provider value={{ userInfo,fetchUserInfo }}>
+    <UserContext.Provider value={{ userInfo, fetchUserInfo }}>
       {children}
     </UserContext.Provider>
   );
