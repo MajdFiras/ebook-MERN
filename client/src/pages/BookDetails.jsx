@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardBody, CardFooter, Stack, Heading, Button, Image, Text, Badge, Wrap, WrapItem, Grid, GridItem, Avatar, Input } from '@chakra-ui/react';
 import { CartContext } from "../context/CartProvider";
 import BooksContext from '../context/BooksProvider';
-import UserContext from '../context/UserProvider'; // Import UserContext
+import UserContext from '../context/UserProvider'; 
 
 const BookDetails = () => {
   const navigate = useNavigate();
@@ -93,7 +93,6 @@ const BookDetails = () => {
       
       {/* Comments Section */}
       <div style={{ marginTop: '20px' }}>
-        <Heading size='md'>Comments:</Heading>
         {comments.length > 0 ? (
           comments.map((comment, index) => (
             <Grid
@@ -158,7 +157,7 @@ const BookDetails = () => {
           </Grid>
         </div>
       ) : (
-        <Text>You need to be logged in to post a comment.</Text>
+        <></>
       )}
     </div>
   );
