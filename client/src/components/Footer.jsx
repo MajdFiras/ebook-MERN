@@ -1,27 +1,53 @@
 import React from 'react';
-import { Box, Text, VStack, Link } from '@chakra-ui/react';
+import { Box, Container, Text, HStack, VStack, Link, Flex } from '@chakra-ui/react';
 import { FaGithub } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <Box width="100%" backgroundColor="#1e1e1e" padding="3%" marginTop="3%">
-      <Box display="flex" justifyContent="space-between" alignItems="flex-start" paddingX="5%">
-        <Text fontSize="3xl" color="white">
-          PAPER
-        </Text>
-
-        <VStack alignItems="flex-start" spacing={0}>
-          <Link href="#" color="white" _hover={{ textDecoration: 'underline' }}>
-            Contact Us
-          </Link>
-          <Link href="#" color="white" _hover={{ textDecoration: 'underline' }}>
-            FAQ
-          </Link>
-          <Link href="https://github.com/MajdFiras/ebook-MERN" isExternal>
-            <FaGithub color="white" size="24px" />
-          </Link>
-        </VStack>
-      </Box>
+    <Box
+      as="footer"
+      bottom={0}
+      width="100%"
+      bg="#1e1e1e"
+      color="white"
+      mt="auto"
+    >
+      <Container maxW="container.xl" py={6}>
+        <Flex
+          direction={{ base: 'column', md: 'row' }}
+          justify="space-between"
+          align={{ base: 'center', md: 'flex-start' }}
+          gap={4}
+        >
+         
+          <VStack align={{ base: 'center', md: 'flex-start' }} spacing={2}>
+            <Text
+              fontSize={{ base: '2xl', md: '3xl' }}
+              fontWeight="bold"
+              letterSpacing="wide"
+            >
+              PAPER
+            </Text>
+            <Text fontSize="sm" color="whiteAlpha.700">
+               A quiet place to read
+            </Text>
+          </VStack>
+          <VStack align={{ base: 'center', md: 'flex-start' }} spacing={2}>
+            <Text fontSize="lg" fontWeight="semibold" mb={2}>
+              Connect With Us
+            </Text>
+            <HStack spacing={4}>
+              <Link
+                href="https://github.com/MajdFiras/ebook-MERN"
+                isExternal
+                _hover={{ transform: 'scale(1.1)', transition: 'transform 0.2s' }}
+              >
+                <FaGithub size="24px" />
+              </Link>
+            </HStack>
+          </VStack>
+        </Flex>
+      </Container>
     </Box>
   );
 };
