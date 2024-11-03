@@ -1,14 +1,27 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardBody, Image, Text, Stack, Heading, Input, Center, InputGroup, InputLeftElement, Box, IconButton } from '@chakra-ui/react';
+import {
+  Card,
+  CardBody,
+  Image,
+  Text,
+  Stack,
+  Heading,
+  Input,
+  Center,
+  InputGroup,
+  InputLeftElement,
+  Box,
+  IconButton,
+  Container,
+  SimpleGrid,
+  VStack,
+} from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import { BsCartPlusFill } from "react-icons/bs";
 import BooksContext from '../context/BooksProvider.jsx';
 import { CartContext } from "../context/CartProvider";
-import Pagination from './Pagination';  // Import Pagination component
-
-
-
+import Pagination from './Pagination';
 
 export const BookList = () => {
   const { addItemToCart } = useContext(CartContext);
@@ -16,14 +29,13 @@ export const BookList = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const booksPerPage = 8;  
+  const booksPerPage = 8;
 
   const filteredBooks = Books.filter(book =>
     book.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
-
   const indexOfLastBook = currentPage * booksPerPage;
   const indexOfFirstBook = indexOfLastBook - booksPerPage;
   const currentBooks = filteredBooks.slice(indexOfFirstBook, indexOfLastBook);
@@ -33,15 +45,20 @@ export const BookList = () => {
   };
 
   return (
-    <div>
-      <Center>
-        <Text fontSize={'3xl'} fontWeight={'bold'} marginTop={'50px'}>
+    <Container maxW="container.xl" px={{ base: 2, md: 8 }}>
+      <VStack spacing={{ base: 4, md: 8 }} width="100%" py={{ base: 4, md: 8 }}>
+        <Heading
+          fontSize={{ base: '2xl', md: '3xl' }}
+          fontWeight="bold"
+          textAlign="center"
+        >
           What Are you looking For ..?
-        </Text>
-      </Center>
+        </Heading>
 
-      <Center>
-        <InputGroup width="30%" margin={'30px'}>
+        <InputGroup 
+          width={{ base: "95%", md: "50%", lg: "30%" }}
+          mb={{ base: 4, md: 8 }}
+        >
           <InputLeftElement pointerEvents='none'>
             <SearchIcon color='black' />
           </InputLeftElement>
@@ -49,88 +66,101 @@ export const BookList = () => {
             placeholder="Search by book name"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            mb="10px"
             size='md'
           />
         </InputGroup>
-      </Center>
 
-      <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around', marginTop: '20px' }}>
-        {currentBooks.length > 0 ? (
-          currentBooks.map((book) => (
-            <Box
-              position="relative"
-              key={book._id}
-              style={{ margin: '20px' }}
-              cursor="pointer"
-              role="group"
-              _hover={{
-                transform: 'scale(1.05)',
-                transition: 'all 0.4s ease-in-out',
-                boxShadow: 'xl',
-              }}
-            >
-              <Card
-                maxW="sm"
-                _groupHover={{
-                  transform: 'scale(1.05)',
-                  transition: 'all 0.4s ease-in-out',
-                  boxShadow: 'xl',
-                }}
-                onClick={() => {
-                  navigate(`/book/bookdetails/${book._id}`);
+        <SimpleGrid
+          columns={{ base: 2, sm: 2, md: 3, lg: 4 }}
+          spacing={{ base: 2, sm: 3, md: 6 }}
+          width="100%"
+        >
+          {currentBooks.length > 0 ? (
+            currentBooks.map((book) => (
+              <Box
+                position="relative"
+                key={book._id}
+                role="group"
+                transition="all 0.3s"
+                _hover={{
+                  transform: { base: 'none', md: 'translateY(-4px)' },
+                  boxShadow: { base: 'none', md: 'xl' },
                 }}
               >
-                <CardBody>
-                  <Image
-                    src={book.cover}
-                    alt="Book cover"
-                    borderRadius="xl"
-                    boxSize="500px"
-                  />
-                  <Stack mt="6" spacing="3">
-                    <Heading size="md">
-                      {book.title} <span style={{ color: 'green', fontSize: '15px' }}>${book.price}</span>
-                    </Heading>
-                    <Text>{book.author}</Text>
-                  </Stack>
-                </CardBody>
-              </Card>
+                <Card
+                  height="100%"
+                  onClick={() => {
+                    navigate(`/book/bookdetails/${book._id}`);
+                  }}
+                >
+                  <CardBody padding={{ base: 2, md: 4 }}>
+                    <Image
+                      src={book.cover}
+                      alt="Book cover"
+                      borderRadius="lg"
+                      width="100%"
+                      height="auto"
+                      objectFit="cover"
+                      aspectRatio="2/3"
+                    />
+                    <Stack mt={{ base: 2, md: 4 }} spacing={{ base: 1, md: 2 }}>
+                      <Heading size={{ base: "xs", md: "sm" }} noOfLines={2}>
+                        {book.title} 
+                        <Text 
+                          as="span" 
+                          color="green.500" 
+                          fontSize={{ base: "xs", md: "sm" }} 
+                          ml={2}
+                        >
+                          ${book.price}
+                        </Text>
+                      </Heading>
+                      <Text 
+                        fontSize={{ base: "xs", md: "sm" }} 
+                        noOfLines={1}
+                      >
+                        {book.author}
+                      </Text>
+                    </Stack>
+                  </CardBody>
+                </Card>
 
-              <IconButton
-                aria-label="Add to cart"
-                icon={<BsCartPlusFill />}
-                position="absolute"
-                bottom="5%"
-                right="5%"
-                colorScheme="green"
-                borderRadius="full"
-                size="lg"
-                _groupHover={{
-                  transform: 'scale(1.4)',
-                  transition: 'all 0.4s ease-in-out',
-                  bottom: '3%',
-                  right: '3%',
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  addItemToCart(book);
-                }}
-              />
-            </Box>
-          ))
-        ) : (
-          <p>No books available :(</p>
-        )}
-      </div>
+                <IconButton
+                  aria-label="Add to cart"
+                  icon={<BsCartPlusFill />}
+                  position="absolute"
+                  bottom={{ base: 2, md: 4 }}
+                  right={{ base: 2, md: 4 }}
+                  colorScheme="green"
+                  borderRadius="full"
+                  size={{ base: "sm", md: "md" }}
+                  opacity="0.9"
+                  _groupHover={{
+                    transform: { base: 'none', md: 'scale(1.1)' },
+                    opacity: 1,
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addItemToCart(book);
+                  }}
+                />
+              </Box>
+            ))
+          ) : (
+            <Text textAlign="center" gridColumn="1/-1">No books available :(</Text>
+          )}
+        </SimpleGrid>
 
-      <Center>
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
-        />
-      </Center>
-    </div>
+        <Center width="100%" mt={{ base: 4, md: 8 }}>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={onPageChange}
+          />
+        </Center>
+      </VStack>
+    </Container>
   );
 };
+
+export default BookList;

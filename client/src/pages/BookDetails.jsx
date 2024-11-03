@@ -1,36 +1,54 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, CardBody, CardFooter, Stack, Heading, Button, Image, Text, Badge, Wrap, WrapItem, Grid, GridItem, Avatar, Input } from '@chakra-ui/react';
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  Stack,
+  Heading,
+  Button,
+  Image,
+  Text,
+  Badge,
+  Wrap,
+  WrapItem,
+  Grid,
+  GridItem,
+  Avatar,
+  Input,
+  Container,
+  VStack,
+  HStack,
+  Box,
+  Flex,
+  ButtonGroup
+} from '@chakra-ui/react';
 import { CartContext } from "../context/CartProvider";
 import BooksContext from '../context/BooksProvider';
-import UserContext from '../context/UserProvider'; 
+import UserContext from '../context/UserProvider';
 
 const BookDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { book, fetchBook, comments, fetchComments, addComment } = useContext(BooksContext);
   const { addItemToCart } = useContext(CartContext);
-  const { userInfo,fetchUserInfo } = useContext(UserContext);
-  
-
-  // State to hold new comment input
+  const { userInfo, fetchUserInfo } = useContext(UserContext);
   const [newComment, setNewComment] = useState("");
-
 
   useEffect(() => {
     fetchUserInfo();
-    console.log(userInfo);
-  },[])
+  }, []);
+
   useEffect(() => {
-    fetchBook(id); 
+    fetchBook(id);
   }, [id, fetchBook]);
-  
+
   useEffect(() => {
     fetchComments(id);
   }, [id, fetchComments]);
 
   if (!book) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   const formattedDate = new Date(book.publishedDate).toLocaleDateString('en-US', {
@@ -41,125 +59,186 @@ const BookDetails = () => {
 
   const handleAddComment = () => {
     if (newComment.trim()) {
-      addComment(id, userInfo._id, newComment); // Pass bookId, userId, and the comment
-      setNewComment(""); // Clear the input field after posting
+      addComment(id, userInfo._id, newComment);
+      setNewComment("");
     }
   };
 
   return (
-    <div style={{ margin: '50px' }}>
-      <Card direction={{ base: 'column', sm: 'row' }} overflow='hidden' variant='filled'>
-        <Image objectFit='cover' maxW={{ base: '100%', sm: '300px' }} src={book.cover} alt={`${book.title} cover`} />
-        <Stack>
+    <Container maxW="container.xl" py={{ base: 4, md: 10 }} px={{ base: 4, md: 8 }}>
+      <Card
+        direction={{ base: 'column', md: 'row' }}
+        overflow='hidden'
+        variant='filled'
+        mb={8}
+      >
+        <Box
+          width={{ base: '100%', md: '300px' }}
+          height={{ base: 'auto', md: 'auto' }}
+        >
+          <Image
+            objectFit='cover'
+            width="100%"
+            height="100%"
+            src={book.cover}
+            alt={`${book.title} cover`}
+          />
+        </Box>
+
+        <Stack flex="1">
           <CardBody>
-            <Heading size='md'>{book.title}</Heading>
-            <Text py='2'>{book.author}</Text>
-            <Text py='2'>{book.description}</Text>
-            <Text py={2}>
-              <strong>Price:</strong> <span style={{ color: 'green', fontWeight: 'bold' }}>${book.price}</span>
-            </Text>
-            <Text py={2}>
-              <strong>Publish Date:</strong> {formattedDate}
-            </Text>
-            <Text py={2}>
-              <strong>Remaining quantity:</strong> {book.amount}
-            </Text>
-            <Text py={2}>
-              <strong>Genre:</strong> {book.genre}
-            </Text>
-            <Text py={2}>
-              <strong>ISBN:</strong> {book.isbn}
-            </Text>
-            <Text py={2}>
-              <strong>Status:</strong> {book.status}
-            </Text>
-            <Text py={2}>
-              <strong>Tags:</strong> {book.tags && book.tags.map((tag, index) => (
-                <Badge key={index} colorScheme="blue" mr={1}>{tag}</Badge>
-              ))}
-            </Text>
+            <VStack align="start" spacing={3}>
+              <Heading size={{ base: 'md', md: 'lg' }}>{book.title}</Heading>
+              <Text fontSize={{ base: 'sm', md: 'md' }}>{book.author}</Text>
+              <Text fontSize={{ base: 'sm', md: 'md' }}>{book.description}</Text>
+
+              <Grid
+                templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }}
+                gap={4}
+                width="100%"
+              >
+                <Box>
+                  <Text fontWeight="bold">Price: 
+                    <Text as="span" color="green.500" ml={2}>${book.price}</Text>
+                  </Text>
+                </Box>
+                <Box>
+                  <Text fontWeight="bold">Publish Date: 
+                    <Text as="span" ml={2}>{formattedDate}</Text>
+                  </Text>
+                </Box>
+                <Box>
+                  <Text fontWeight="bold">Quantity: 
+                    <Text as="span" ml={2}>{book.amount}</Text>
+                  </Text>
+                </Box>
+                <Box>
+                  <Text fontWeight="bold">Genre: 
+                    <Text as="span" ml={2}>{book.genre}</Text>
+                  </Text>
+                </Box>
+                <Box>
+                  <Text fontWeight="bold">ISBN: 
+                    <Text as="span" ml={2}>{book.isbn}</Text>
+                  </Text>
+                </Box>
+                <Box>
+                  <Text fontWeight="bold">Status: 
+                    <Text as="span" ml={2}>{book.status}</Text>
+                  </Text>
+                </Box>
+              </Grid>
+
+              <Box width="100%">
+                <Text fontWeight="bold" mb={2}>Tags:</Text>
+                <Wrap>
+                  {book.tags && book.tags.map((tag, index) => (
+                    <WrapItem key={index}>
+                      <Badge colorScheme="blue">{tag}</Badge>
+                    </WrapItem>
+                  ))}
+                </Wrap>
+              </Box>
+            </VStack>
           </CardBody>
+
           <CardFooter>
-            <Button variant='solid' colorScheme='blue' onClick={() => navigate(`/payment/${id}`)}>Buy</Button>
-            <Button onClick={(e) => {
-              e.stopPropagation(); 
-              addItemToCart(book);
-            }} variant='ghost' colorScheme='blue' marginLeft={'6px'}>
-              Add to Cart
-            </Button>
+            <ButtonGroup spacing={4} flexWrap="wrap">
+              <Button 
+                variant='solid' 
+                colorScheme='blue'
+                onClick={() => navigate(`/payment/${id}`)}
+              >
+                Buy
+              </Button>
+              <Button
+                variant='ghost'
+                colorScheme='blue'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addItemToCart(book);
+                }}
+              >
+                Add to Cart
+              </Button>
+            </ButtonGroup>
           </CardFooter>
         </Stack>
       </Card>
-      
+
       {/* Comments Section */}
-      <div style={{ marginTop: '20px' }}>
+      <VStack spacing={4} align="stretch" width="100%">
         {comments.length > 0 ? (
           comments.map((comment, index) => (
-            <Grid
-              bg={'gray.100'}
-              padding={'20px'}
+            <Box
               key={index}
-              h='auto'
-              templateColumns='repeat(15, 2fr)' 
-              gap={4} 
-              marginTop={'10px'}
-              alignItems='center'  
+              bg="gray.100"
+              p={{ base: 4, md: 6 }}
+              borderRadius="md"
             >
-              <GridItem colSpan={1} display="flex">
-                <Wrap>
-                  <WrapItem>
-                    <Avatar size='lg' name={comment.postedBy.username} src={comment.postedBy.avatar} />
-                  </WrapItem>
-                </Wrap>
-              </GridItem>
-              <GridItem colSpan={5}>
-                <Text><strong>{comment.postedBy.username}:</strong> {comment.comment}</Text>
-                <Text fontSize="sm" color="gray.500">Posted on: {new Date(comment.created).toLocaleString()}</Text>
-              </GridItem>
-            </Grid>
+              <Flex
+                direction={{ base: 'column', sm: 'row' }}
+                gap={{ base: 3, md: 4 }}
+                align={{ base: 'start', sm: 'center' }}
+              >
+                <Avatar 
+                  size={{ base: 'md', md: 'lg' }}
+                  name={comment.postedBy.username}
+                  src={comment.postedBy.avatar}
+                />
+                <Box flex="1">
+                  <Text fontWeight="bold">{comment.postedBy.username}</Text>
+                  <Text>{comment.comment}</Text>
+                  <Text fontSize="sm" color="gray.500" mt={1}>
+                    Posted on: {new Date(comment.created).toLocaleString()}
+                  </Text>
+                </Box>
+              </Flex>
+            </Box>
           ))
         ) : (
           <Text>No comments yet.</Text>
         )}
-      </div>
+      </VStack>
 
       {/* Add New Comment Section */}
-      {!!localStorage.getItem("token") ? (
-        <div>
-          <Grid
-            bg={'gray.100'}
-            padding={'20px'}
-            h='auto'
-            templateColumns='repeat(15, 2fr)'  
-            gap={4} 
-            marginTop={'10px'}
-            alignItems='center'  
+      {!!localStorage.getItem("token") && (
+        <Box
+          bg="gray.100"
+          p={{ base: 4, md: 6 }}
+          borderRadius="md"
+          mt={4}
+        >
+          <Flex
+            direction={{ base: 'column', sm: 'row' }}
+            gap={4}
+            align={{ base: 'stretch', sm: 'center' }}
           >
-            <GridItem colSpan={1} display="flex"> 
-              <Wrap>
-                <WrapItem>
-                  <Avatar size='lg' name={userInfo?.username} src={userInfo?.avatar} />
-                </WrapItem>
-              </Wrap>
-            </GridItem>
-            <GridItem colSpan={5} display={'flex'} justifyContent={'center'} alignItems={'center'}>
+            <Avatar
+              size={{ base: 'md', md: 'lg' }}
+              name={userInfo?.username}
+              src={userInfo?.avatar}
+            />
+            <HStack flex="1" spacing={4}>
               <Input
                 placeholder='Write a Comment...'
-                size='lg'
-                _placeholder={{ opacity: 1, color: 'gray.500' }}
-                variant={'outline'}
-                border={'#bcbfc8 1px solid'}
+                size={{ base: 'md', md: 'lg' }}
+                bg="white"
                 value={newComment}
-                onChange={(e) => setNewComment(e.target.value)} // Update the state with the input value
+                onChange={(e) => setNewComment(e.target.value)}
               />
-              <Button colorScheme='teal' marginLeft={'2%'} onClick={handleAddComment}>POST</Button>
-            </GridItem>
-          </Grid>
-        </div>
-      ) : (
-        <></>
+              <Button
+                colorScheme='teal'
+                onClick={handleAddComment}
+                size={{ base: 'md', md: 'lg' }}
+              >
+                POST
+              </Button>
+            </HStack>
+          </Flex>
+        </Box>
       )}
-    </div>
+    </Container>
   );
 };
 
