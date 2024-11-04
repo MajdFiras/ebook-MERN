@@ -1,13 +1,27 @@
-import React from 'react'
+import React, { useContext } from 'react';
 import { useParams } from 'react-router-dom';
+import BooksContext from '../context/BooksProvider.jsx';
+import { Center, Card, CardBody, Box,Image, Text, Heading } from "@chakra-ui/react";
 
 const Payment = () => {
-  const {id} = useParams()
-  return (
-    <>
-     {id ? <h1>You Buy a book with id {id}</h1> : <h1>You buy from the local storage</h1>}
-    </>
-  )
-}
+  const { id } = useParams();
+  const { Books } = useContext(BooksContext);
+  const book = Books ? Books.find((book) => book._id === id) : null;
 
-export default Payment
+  return (
+    <div>
+      {id ? (
+        book ? (
+          <div>
+          </div>
+        ) : (
+          <h1>Loading...</h1>
+        )
+      ) : (
+        <h1>You buy from the local storage</h1>
+      )}
+    </div>
+  );
+};
+
+export default Payment;

@@ -197,7 +197,7 @@ const BookDetails = () => {
             </Box>
           ))
         ) : (
-          <Text>No comments yet.</Text>
+          <></>
         )}
       </VStack>
 
